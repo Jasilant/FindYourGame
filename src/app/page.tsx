@@ -1,21 +1,44 @@
-export default function Home() {
-  return (
-    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6">
-      <h1 className="text-5xl font-bold text-orange-500 mb-6">FindYourGame.ch</h1>
-      <p className="text-gray-400 text-lg mb-10 text-center">
-        Finde dein nächstes Lieblingsspiel 🎮
-      </p>
+'use client';
+import { useMemo, useState } from 'react';
+import Header from './components/Header';
+import SearchBar from './components/SearchBar';
+import GameTile from './components/GameTile';
 
-      <div className="w-full max-w-xl flex">
-        <input
-          type="text"
-          placeholder="Suche nach einem Spiel..."
-          className="flex-grow px-4 py-3 rounded-l-2xl border border-orange-500 bg-black text-white focus:outline-none"
-        />
-        <button className="px-6 py-3 rounded-r-2xl bg-orange-500 text-black font-bold hover:bg-orange-600 transition">
-          Suchen
-        </button>
-      </div>
+const MOCK = [
+  { title: 'Elden Ring', platform: 'PC / PS5 / XSX' },
+  { title: 'Baldur\'s Gate 3', platform: 'PC / PS5' },
+  { title: 'Hades II', platform: 'PC (Early Access)' },
+  { title: 'Starfield', platform: 'PC / XSX' },
+];
+
+export default function Page() {
+  const [query, setQuery] = useState('');
+  const results = useMemo(() => {
+    if (!query) return MOCK;
+    const q = query.toLowerCase();
+    return MOCK.filter(g => g.title.toLowerCase().includes(q) || g.platform.toLowerCase().includes(q));
+  }, [query]);
+
+  return (
+    <main>
+      <Header />
+      <section className="container py-12">
+        <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+          Finde dein <span style={{ color: 'var(--accent)' }}>nächstes Spiel</span>
+        </h1>
+        <p className="mt-3 opacity-80 max-w-2xl">Suche in allen Spielen der Welt. Orange & Schwarz, fokussiert auf schnelle Treffer.</p>
+        <div className="mt-6">
+          <SearchBar onSearch={setQuery} />
+        </div>
+      </section>
+
+      <section className="container pb-16">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+          {results.map((g, i) => (
+            <GameTile key={i} title={g.title} platform={g.platform} />
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
