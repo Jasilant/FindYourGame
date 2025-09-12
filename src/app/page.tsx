@@ -1,5 +1,4 @@
 'use client';
-'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,7 +14,7 @@ export default function Home() {
 
   function submitSearch() {
     if (!q.trim()) return;
-    alert(`Suche: ${q}`); // TODO: Später echte Suche anschließen
+    alert(`Suche: ${q}`); // TODO: später echte Suche
   }
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') submitSearch();
@@ -36,9 +35,7 @@ export default function Home() {
     return (
       <Link
         href={href}
-        className={`text-sm transition ${
-          active ? 'text-white' : 'text-zinc-300 hover:text-white'
-        }`}
+        className={`text-sm transition ${active ? 'text-white' : 'text-zinc-300 hover:text-white'}`}
       >
         {label}
       </Link>
@@ -50,7 +47,7 @@ export default function Home() {
       {/* NAVBAR */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/60 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          {/* Links: (Maskottchen später) + Brand */}
+          {/* Links: Logo (Maskottchen später) + Brand */}
           <div className="flex items-center gap-3">
             <Image
               src="/logo.svg"
@@ -105,9 +102,12 @@ export default function Home() {
 
       {/* HERO / Suche */}
       <section className="mx-auto flex max-w-4xl flex-col items-center px-4 py-20 text-center">
+        <h1 className="mb-4 text-4xl font-extrabold md:text-5xl">
           Finde dein nächstes <span className="text-orange-500">Game</span>
         </h1>
+        <p className="mb-10 max-w-2xl text-zinc-300">
           Such nach Titel, Genre oder Plattform – wir zeigen dir die besten Treffer.
+        </p>
 
         {/* Großes Suchfeld */}
         <div className="w-full rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur shadow-2xl">
@@ -116,6 +116,7 @@ export default function Home() {
             <input
               ref={inputRef}
               value={q}
+              onChange={(e) => setQ(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Finde dein Spiel…  (Tipp: Drücke '/' zum Fokus)"
               className="w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-zinc-500 focus:outline-none"
@@ -137,7 +138,3 @@ export default function Home() {
     </main>
   );
 }
-              onChange={(e) => setQ(e.target.value)}
-        </p>
-        <p className="mb-10 max-w-2xl text-zinc-300">
-
