@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -11,8 +12,9 @@ type Game = {
   platforms?: string[];
 };
 
-export default function FilterPage() {
-  const sp = useSearchParams();
+// Die eigentliche Logik in eine Client-Komponente auslagern:
+function FilterContent() {
+  const sp = useSearchParams(); // <- darf in Client-Komponente stehen
   const q = (sp.get('q') ?? '').trim();
 
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,6 @@ export default function FilterPage() {
     if (!q) { setResults([]); return; }
     setLoading(true);
     const t = setTimeout(() => {
-      // Dummy: 9 Karten mit Namen, später per API ersetzen
       const mocked: Game[] = Array.from({ length: 9 }).map((_, i) => ({
         id: i + 1,
         name: `${q} – Ergebnis ${i + 1}`,
@@ -73,5 +74,14 @@ export default function FilterPage() {
         )}
       </section>
     </main>
+  );
+}
+
+// WICHTIG: Seite mit Suspense um die Client-Komponente
+export default function FilterPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-black text-white"><div className="p-6 text-zinc-400">Lade Filter…</div></main>}>
+      <FilterContent />
+    </Suspense>
   );
 }
