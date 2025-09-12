@@ -1,3 +1,4 @@
+cat > src/app/page.tsx << 'EOF'
 'use client';
 
 import Link from 'next/link';
@@ -112,7 +113,7 @@ export default function Home() {
           Entdecke deine <span className="text-orange-500">Lieblings</span>spiele!
         </h1>
         <p className="mb-10 max-w-2xl text-zinc-300">
-          Such nach Titel, Genre oder Plattform – wir zeigen dir die besten Treffer.
+          Suche nach Titel, Genre oder Plattform – finde sofort dein Match.
         </p>
 
         {/* Großes Suchfeld mit Glow & Dropdown */}
@@ -164,7 +165,7 @@ export default function Home() {
         {/* Beliebt: klickbare Tags */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="text-zinc-400 mr-2">Beliebt:</span>
-          {popularTags.map(tag => (
+          {['RPG', 'Switch', 'Co-op', 'Indie'].map(tag => (
             <button
               key={tag}
               onClick={() => clickTag(tag)}
@@ -183,3 +184,5 @@ export default function Home() {
     </main>
   );
 }
+EOF
+// trigger build Fri Sep 12 15:29:03     2025
