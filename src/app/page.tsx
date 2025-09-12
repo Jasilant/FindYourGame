@@ -1,27 +1,27 @@
 'use client';
+'use client';
 
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { LogIn, Menu, X, Search } from 'lucide-react';
 
 export default function Home() {
-  // State
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [q, setQ] = useState('');
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Enter-Handling & Shortcuts
   function submitSearch() {
     if (!q.trim()) return;
-    alert(`Suche: ${q}`); // TODO: hier später echte Suche einbauen
+    alert(`Suche: ${q}`); // TODO: Später echte Suche anschließen
   }
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') submitSearch();
   }
   useEffect(() => {
     const onSlash = (e: KeyboardEvent) => {
-      // Focus mit "/" (wenn nicht im Input)
       if (e.key === '/' && document.activeElement !== inputRef.current) {
         e.preventDefault();
         inputRef.current?.focus();
@@ -31,16 +31,30 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onSlash);
   }, []);
 
+  const tab = (href: string, label: string) => {
+    const active = pathname === href;
+    return (
+      <Link
+        href={href}
+        className={`text-sm transition ${
+          active ? 'text-white' : 'text-zinc-300 hover:text-white'
+        }`}
+      >
+        {label}
+      </Link>
+    );
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-black via-zinc-900 to-black text-white">
-      {/* ===== NAVBAR ===== */}
+      {/* NAVBAR */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/60 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          {/* Links: Maskottchen + Brand */}
+          {/* Links: (Maskottchen später) + Brand */}
           <div className="flex items-center gap-3">
             <Image
-              src="/mascot.png"
-              alt="Maskottchen"
+              src="/logo.svg"
+              alt="FindYourGame"
               width={40}
               height={40}
               className="rounded-lg ring-1 ring-white/10"
@@ -53,9 +67,9 @@ export default function Home() {
 
           {/* Mitte: Tabs (Desktop) */}
           <nav className="hidden md:flex items-center gap-8">
-            <Link className="text-sm text-zinc-300 hover:text-white" href="/">Home</Link>
-            <Link className="text-sm text-zinc-300 hover:text-white" href="/news">News</Link>
-            <Link className="text-sm text-zinc-300 hover:text-white" href="/filter">Spiele-Filter</Link>
+            {tab('/', 'Home')}
+            {tab('/news', 'News')}
+            {tab('/filter', 'Spiele-Filter')}
           </nav>
 
           {/* Rechts: Login + Burger (mobil) */}
@@ -67,7 +81,6 @@ export default function Home() {
             >
               <LogIn size={22} />
             </Link>
-
             <button
               className="md:hidden rounded-xl p-2 text-zinc-300 hover:text-white hover:bg-white/10 transition"
               aria-label="Menü öffnen"
@@ -90,14 +103,11 @@ export default function Home() {
         )}
       </header>
 
-      {/* ===== HERO / Suche ===== */}
+      {/* HERO / Suche */}
       <section className="mx-auto flex max-w-4xl flex-col items-center px-4 py-20 text-center">
-        <h1 className="mb-4 text-4xl font-extrabold md:text-5xl">
           Finde dein nächstes <span className="text-orange-500">Game</span>
         </h1>
-        <p className="mb-10 max-w-2xl text-zinc-300">
           Such nach Titel, Genre oder Plattform – wir zeigen dir die besten Treffer.
-        </p>
 
         {/* Großes Suchfeld */}
         <div className="w-full rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur shadow-2xl">
@@ -106,7 +116,6 @@ export default function Home() {
             <input
               ref={inputRef}
               value={q}
-              onChange={(e) => setQ(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder="Finde dein Spiel…  (Tipp: Drücke '/' zum Fokus)"
               className="w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-zinc-500 focus:outline-none"
@@ -121,7 +130,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Subline */}
         <div className="mt-6 text-sm text-zinc-400">
           Beliebt: „RPG“, „Switch“, „Co-op“, „Indie“
         </div>
@@ -129,3 +137,7 @@ export default function Home() {
     </main>
   );
 }
+              onChange={(e) => setQ(e.target.value)}
+        </p>
+        <p className="mb-10 max-w-2xl text-zinc-300">
+
