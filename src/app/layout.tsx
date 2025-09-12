@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import "./styles/globals.css";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "FindYourGame.ch",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
-      <body>{children}</body>
+      <body className="bg-black text-white">{children}</body>
     </html>
   );
 }
