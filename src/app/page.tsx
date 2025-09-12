@@ -1,4 +1,3 @@
-cat > src/app/page.tsx << 'EOF'
 'use client';
 
 import Link from 'next/link';
@@ -165,7 +164,7 @@ export default function Home() {
         {/* Beliebt: klickbare Tags */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-sm">
           <span className="text-zinc-400 mr-2">Beliebt:</span>
-          {['RPG', 'Switch', 'Co-op', 'Indie'].map(tag => (
+          {popularTags.map(tag => (
             <button
               key={tag}
               onClick={() => clickTag(tag)}
@@ -184,5 +183,3 @@ export default function Home() {
     </main>
   );
 }
-EOF
-// trigger build Fri Sep 12 15:29:03     2025
