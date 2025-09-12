@@ -1,11 +1,17 @@
-import '../styles/globals.css';
-import type { Metadata } from 'next';
-import React from 'react';
+import type { Metadata } from "next";
+import "./styles/globals.css";
 
 export const metadata: Metadata = {
-  title: 'FindYourGame.ch',
-  description: 'Finde dein nächstes Spiel — Search & Discover',
-  icons: { icon: '/favicon.ico' },
+  title: "FindYourGame.ch",
+  description: "Entdecke deine Lieblingsspiele – Suche nach Titel, Genre oder Plattform.",
+  openGraph: {
+    title: "FindYourGame.ch",
+    description: "Entdecke deine Lieblingsspiele – Suche nach Titel, Genre oder Plattform.",
+    url: "https://www.findyourgame.ch",
+    siteName: "FindYourGame.ch",
+    type: "website",
+  },
+  icons: { icon: "/favicon.ico" },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
