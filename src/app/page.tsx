@@ -63,7 +63,7 @@ export default function Home() {
       {/* NAVBAR */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-black/60 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3">
-          {/* Links: NUR Brand-Text (kleines Label/Logo entfernt) */}
+          {/* Links: NUR Brand-Text */}
           <Link href={"/" as Route} className="text-lg font-bold tracking-wide">
             FindYourGame<span className="text-orange-500">.ch</span>
           </Link>
@@ -109,7 +109,7 @@ export default function Home() {
       {/* HERO / Suche */}
       <section className="mx-auto flex max-w-4xl flex-col items-center px-4 py-20 text-center">
         <h1 className="mb-4 text-4xl font-extrabold md:text-5xl">
-          Dein nächstes <span className="text-orange-500">Abenteuer</span> beginnt hier
+          Entdecke deine <span className="text-orange-500">Lieblings</span>spiele!
         </h1>
         <p className="mb-10 max-w-2xl text-zinc-300">
           Such nach Titel, Genre oder Plattform – wir zeigen dir die besten Treffer.
