@@ -15,11 +15,13 @@ export default function Home() {
 
   function submitSearch() {
     if (!q.trim()) return;
-    alert(`Suche: ${q}`); // TODO: später echte Suche
+    alert(`Suche: ${q}`); // TODO: später echte Suche einbauen
   }
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') submitSearch();
   }
+
   useEffect(() => {
     const onSlash = (e: KeyboardEvent) => {
       if (e.key === '/' && document.activeElement !== inputRef.current) {
@@ -110,9 +112,9 @@ export default function Home() {
           Such nach Titel, Genre oder Plattform – wir zeigen dir die besten Treffer.
         </p>
 
-        {/* Großes Suchfeld */}
-        <div className="w-full rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur shadow-2xl">
-          <div className="flex items-center gap-2 rounded-xl bg-black/50 p-2 focus-within:ring-2 focus-within:ring-orange-500/70 transition">
+        {/* Großes Suchfeld mit Glow & Dropdown */}
+        <div className="relative w-full rounded-2xl bg-white/5 p-2 ring-1 ring-white/10 backdrop-blur shadow-2xl">
+          <div className="flex items-center gap-2 rounded-xl bg-black/50 p-2 focus-within:ring-2 focus-within:ring-orange-500/70 focus-within:shadow-[0_0_15px_rgba(255,100,0,0.5)] transition">
             <Search className="ml-1 shrink-0 text-zinc-400" size={22} />
             <input
               ref={inputRef}
@@ -125,11 +127,31 @@ export default function Home() {
             />
             <button
               onClick={submitSearch}
-              className="shrink-0 rounded-xl bg-orange-600 px-5 py-3 text-sm font-semibold hover:bg-orange-700 transition"
+              className="shrink-0 rounded-xl bg-orange-600 px-5 py-3 text-sm font-semibold hover:bg-orange-700 active:scale-95 transition"
             >
               Suchen
             </button>
           </div>
+
+          {/* Vorschlagsliste */}
+          {q && (
+            <ul className="absolute left-0 right-0 top-full mt-2 rounded-xl bg-black/90 border border-white/10 shadow-lg divide-y divide-white/10">
+              {['Zelda: Tears of the Kingdom', 'Minecraft', 'Elden Ring', 'Fortnite', 'Baldur’s Gate 3']
+                .filter(item => item.toLowerCase().includes(q.toLowerCase()))
+                .map((item, i) => (
+                  <li
+                    key={i}
+                    className="px-4 py-2 text-left text-sm text-zinc-200 hover:bg-white/10 cursor-pointer"
+                    onClick={() => {
+                      setQ(item);
+                      submitSearch();
+                    }}
+                  >
+                    {item}
+                  </li>
+                ))}
+            </ul>
+          )}
         </div>
 
         <div className="mt-6 text-sm text-zinc-400">
