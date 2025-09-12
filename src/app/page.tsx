@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
+import type { Route } from 'next';
 import { LogIn, Menu, X, Search } from 'lucide-react';
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
     return () => window.removeEventListener('keydown', onSlash);
   }, []);
 
-  const tab = (href: string, label: string) => {
+  const tab = (href: Route, label: string) => {
     const active = pathname === href;
     return (
       <Link
@@ -64,9 +65,9 @@ export default function Home() {
 
           {/* Mitte: Tabs (Desktop) */}
           <nav className="hidden md:flex items-center gap-8">
-            {tab('/', 'Home')}
-            {tab('/news', 'News')}
-            {tab('/filter', 'Spiele-Filter')}
+            {tab('/' as Route, 'Home')}
+            {tab('/news' as Route, 'News')}
+            {tab('/filter' as Route, 'Spiele-Filter')}
           </nav>
 
           {/* Rechts: Login + Burger (mobil) */}
