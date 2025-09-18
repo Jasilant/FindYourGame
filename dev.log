@@ -1,0 +1,5 @@
+npm error code EJSONPARSE
+npm error JSON.parse Invalid package.json: JSONParseError: Expected ',' or '}' after property value in JSON at position 113 (line 6 column 5) while parsing near "...ACK=0 next dev\"\n    \"dev\": \"next dev --t..."
+npm error JSON.parse Failed to parse JSON data.
+npm error JSON.parse Note: package.json must be actual JSON, not just JavaScript.
+npm error A complete log of this run can be found in: C:\Users\arnoj\AppData\Local\npm-cache\_logs\2025-09-18T07_14_16_535Z-debug-0.log
