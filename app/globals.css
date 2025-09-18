@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* leichte Defaults */
+:root { color-scheme: dark; }
+html, body { height: 100%; }
+
+/* optional: Browser-Outline abschalten (nur Optik) */
+*:focus { outline: none !important; box-shadow: none !important; }
