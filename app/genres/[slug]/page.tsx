@@ -3,8 +3,9 @@ import { generateMockGames, GENRES } from "../../../lib/mockGames";
 
 export const dynamic = "force-dynamic";
 
-export default function GenrePage({ params }: { params: { slug: string } }) {
-  const g = params.slug.toLowerCase();
+export default async function GenrePage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const g = slug.toLowerCase();
   const valid = (GENRES as string[]).includes(g);
   const all = generateMockGames(200);
   const list = valid ? all.filter(x => x.genre === g).sort((a,b)=> b.rating - a.rating) : [];

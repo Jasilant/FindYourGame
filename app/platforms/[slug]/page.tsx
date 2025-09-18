@@ -12,8 +12,9 @@ function mapSlug(slug: string): "pc" | "ps5" | "xbox" | "switch" | null {
   return null;
 }
 
-export default function PlatformPage({ params }: { params: { slug: string } }) {
-  const key = mapSlug(params.slug);
+export default async function PlatformPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const key = mapSlug(slug);
   const all = generateMockGames(200);
   const list = key ? all.filter(g => g.platform === key).sort((a,b)=> b.rating - a.rating) : [];
   const title = key ? (key === "ps5" ? "PlayStation" : key.toUpperCase()) : "Unbekannte Plattform";
