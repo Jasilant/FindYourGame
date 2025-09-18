@@ -8,36 +8,37 @@ type MenuId = "releases" | "popular" | "platforms" | "genres" | null;
 
 export default function Navbar() {
   const pathname = usePathname();
-  const isActive = (href: string) =>
-    pathname === href ? "text-orange-500" : "opacity-90 hover:opacity-100";
+  const isActive = (href: string) => pathname === href ? "text-orange-400" : "opacity-90 hover:opacity-100";
 
-  // Offenes Menü (hover-gesteuert mit Intent)
+  // --- State / Timer ---------------------------------------------------------
   const [openMenu, setOpenMenu] = useState<MenuId>(null);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
 
-  // Refs
-  const barRef = useRef<HTMLDivElement>(null);
-  const triggers = {
-    releases: useRef<HTMLButtonElement>(null),
-    popular: useRef<HTMLButtonElement>(null),
-    platforms: useRef<HTMLButtonElement>(null),
-    genres: useRef<HTMLButtonElement>(null),
-  } as const;
+  // --- Refs ------------------------------------------------------------------
+  const barRef = useRef<HTMLDivElement>(null);          // gesamte Nav-Zeile
+  const rowRef = useRef<HTMLDivElement>(null);          // mittlere Link-Reihe (für Underline)
+  const subWrapRef = useRef<HTMLDivElement>(null);      // Wrapper unter der Leiste (height-transition)
+  const subInnerRef = useRef<HTMLDivElement>(null);     // misst tatsächliche Höhe
 
-  // Submenu-Wrapper (nimmt Höhe ein → schiebt Content runter)
-  const subWrapRef = useRef<HTMLDivElement>(null);
-  const subInnerRef = useRef<HTMLDivElement>(null);
+  // Trigger-Buttons (inkl. Home/News für Underline)
+  const btnHome = useRef<HTMLAnchorElement>(null);
+  const btnNews = useRef<HTMLAnchorElement>(null);
+  const btnReleases = useRef<HTMLButtonElement>(null);
+  const btnPopular  = useRef<HTMLButtonElement>(null);
+  const btnPlatforms= useRef<HTMLButtonElement>(null);
+  const btnGenres   = useRef<HTMLButtonElement>(null);
 
-  // Layout-Werte
+  // Layout: Panel-Zentrierung & Pushdown & Underline
   const [subHeight, setSubHeight] = useState(0);
-  const [subLeft, setSubLeft] = useState(0);
-  const [subWidth, setSubWidth] = useState(560);
-  const [caretLeft, setCaretLeft] = useState(24); // Position des kleinen Dreiecks
-  const [underlineLeft, setUnderlineLeft] = useState(0);
-  const [underlineWidth, setUnderlineWidth] = useState(0);
+  const [panelWidth, setPanelWidth] = useState(560);
+  const [panelLeft, setPanelLeft] = useState(0);
+  const [caretLeft, setCaretLeft] = useState(24);
 
-  // Hover-Intent: öffnen mit Delay, schließen mit Delay
+  const [underlineLeft, setULeft]   = useState(0);
+  const [underlineWidth, setUWidth] = useState(0);
+
+  // --- Hover Intent ----------------------------------------------------------
   const scheduleOpen = (id: MenuId) => {
     if (closeTimer.current) { window.clearTimeout(closeTimer.current); closeTimer.current = null; }
     if (openTimer.current) window.clearTimeout(openTimer.current);
@@ -49,10 +50,10 @@ export default function Navbar() {
     closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
   };
 
-  // Maus komplett außerhalb von Nav + Panel → schließen
+  // Maus komplett außerhalb → schließen
   useEffect(() => {
     const onDocMove = (e: MouseEvent) => {
-      const inBar = !!barRef.current?.contains(e.target as Node);
+      const inBar  = !!barRef.current?.contains(e.target as Node);
       const inWrap = !!subWrapRef.current?.contains(e.target as Node);
       if (!inBar && !inWrap) scheduleClose();
     };
@@ -60,56 +61,76 @@ export default function Navbar() {
     return () => document.removeEventListener("mousemove", onDocMove);
   }, []);
 
-  // Höhe animieren (push-down)
+  // Pushdown: Höhe animieren
   useLayoutEffect(() => {
     const content = subInnerRef.current;
-    if (!content) return;
-    const target = openMenu ? content.scrollHeight : 0;
+    const target = openMenu ? (content?.scrollHeight ?? 0) : 0;
     setSubHeight(target);
   }, [openMenu]);
 
-  // Positionen berechnen: Panel links, Breite, Caret, Unterstrich unter Trigger
+  // Panel mittig unter Trigger positionieren (clamped ins Container-Bounding)
   useLayoutEffect(() => {
     const wrap = subWrapRef.current;
-    if (!wrap) return;
+    if (!wrap || !openMenu) return;
 
     const containerRect = wrap.getBoundingClientRect();
-
     const btn =
-      openMenu === "releases" ? triggers.releases.current :
-      openMenu === "popular" ? triggers.popular.current :
-      openMenu === "platforms" ? triggers.platforms.current :
-      openMenu === "genres" ? triggers.genres.current : null;
-
+      openMenu === "releases" ? btnReleases.current :
+      openMenu === "popular"  ? btnPopular.current  :
+      openMenu === "platforms"? btnPlatforms.current:
+      openMenu === "genres"   ? btnGenres.current   : null;
     if (!btn) return;
 
     const btnRect = btn.getBoundingClientRect();
 
     const width =
-      openMenu === "genres" ? 760 :
-      openMenu === "platforms" ? 600 : 560;
-    setSubWidth(width);
+      openMenu === "genres"    ? 760 :
+      openMenu === "platforms" ? 620 : 560;
+    setPanelWidth(width);
 
-    const left = Math.max(
-      0,
-      Math.min(btnRect.left - containerRect.left, containerRect.width - width)
-    );
-    setSubLeft(left);
+    const center = btnRect.left - containerRect.left + btnRect.width/2;
+    const left   = Math.max(0, Math.min(center - width/2, containerRect.width - width));
+    setPanelLeft(left);
 
-    const center = btnRect.left - containerRect.left + btnRect.width / 2;
-    setCaretLeft(Math.max(16, Math.min(center - left - 8, width - 16)));
-
-    // Unterstreichung unter dem Trigger
-    setUnderlineLeft(btnRect.left - containerRect.left);
-    setUnderlineWidth(btnRect.width);
+    // Caret mittig zum Button, aber innerhalb des Panels clampen
+    const caret = Math.max(16, Math.min(center - left - 6, width - 16));
+    setCaretLeft(caret);
   }, [openMenu]);
 
-  // Handler für die Trigger-Zeile
-  const onEnterTrigger = (id: MenuId) => scheduleOpen(id);
+  // Underline: fährt unter den aktiven Trigger
+  function setUnderlineTo(el: HTMLElement | null) {
+    const row = rowRef.current;
+    if (!row || !el) return;
+    const r = row.getBoundingClientRect();
+    const e = el.getBoundingClientRect();
+    setULeft(e.left - r.left);
+    setUWidth(e.width);
+  }
 
+  // Underline beim Routenwechsel setzen
+  useEffect(() => {
+    // mappe Pfad auf passenden Trigger
+    if (pathname.startsWith("/releases")) setUnderlineTo(btnReleases.current);
+    else if (pathname.startsWith("/popular")) setUnderlineTo(btnPopular.current);
+    else if (pathname.startsWith("/platforms")) setUnderlineTo(btnPlatforms.current);
+    else if (pathname.startsWith("/genres")) setUnderlineTo(btnGenres.current);
+    else if (pathname === "/news") setUnderlineTo(btnNews.current);
+    else setUnderlineTo(btnHome.current);
+  }, [pathname]);
+
+  // Underline beim Hover sofort zum Trigger fahren
+  const onEnterTrigger = (id: MenuId) => {
+    scheduleOpen(id);
+    if (id === "releases") setUnderlineTo(btnReleases.current);
+    if (id === "popular")  setUnderlineTo(btnPopular.current);
+    if (id === "platforms")setUnderlineTo(btnPlatforms.current);
+    if (id === "genres")   setUnderlineTo(btnGenres.current);
+  };
+
+  // --- Render ----------------------------------------------------------------
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black">
-      {/* Top-Bar */}
+      {/* TOP BAR */}
       <nav ref={barRef} className="mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between py-3">
           {/* Logo */}
@@ -118,54 +139,52 @@ export default function Navbar() {
             <span className="text-orange-500">.ch</span>
           </Link>
 
-          {/* Mitte: Home + Menüs + News */}
-          <div className="relative hidden items-center gap-6 md:flex"
-               onMouseLeave={scheduleClose}>
-            <Link href="/" className={`px-2 py-1 rounded-lg transition ${isActive("/")}`}
-                  onMouseEnter={() => scheduleOpen(null)}>
+          {/* Mitte: Nav-Row */}
+          <div ref={rowRef} className="relative hidden items-center gap-6 md:flex" onMouseLeave={scheduleClose}>
+            <Link href="/" ref={btnHome}
+              className={`px-2 py-1 rounded-lg transition ${isActive("/")}`}
+              onMouseEnter={() => { scheduleOpen(null); setUnderlineTo(btnHome.current); }}>
               Home
             </Link>
 
-            {/* Releases */}
-            <button ref={triggers.releases}
+            <button ref={btnReleases}
               className="px-2 py-1 rounded-lg opacity-90 transition hover:opacity-100"
               onMouseEnter={() => onEnterTrigger("releases")}>
               Releases
             </button>
 
-            {/* Popular */}
-            <button ref={triggers.popular}
+            <button ref={btnPopular}
               className="px-2 py-1 rounded-lg opacity-90 transition hover:opacity-100"
               onMouseEnter={() => onEnterTrigger("popular")}>
               Popular
             </button>
 
-            {/* Platforms */}
-            <button ref={triggers.platforms}
+            <button ref={btnPlatforms}
               className="px-2 py-1 rounded-lg opacity-90 transition hover:opacity-100"
               onMouseEnter={() => onEnterTrigger("platforms")}>
               Platforms
             </button>
 
-            {/* Genres */}
-            <button ref={triggers.genres}
+            <button ref={btnGenres}
               className="px-2 py-1 rounded-lg opacity-90 transition hover:opacity-100"
               onMouseEnter={() => onEnterTrigger("genres")}>
               Genres
             </button>
 
-            <Link href="/news" className={`px-2 py-1 rounded-lg transition ${isActive("/news")}`}
-                  onMouseEnter={() => scheduleOpen(null)}>
+            <Link href="/news" ref={btnNews}
+              className={`px-2 py-1 rounded-lg transition ${isActive("/news")}`}
+              onMouseEnter={() => { scheduleOpen(null); setUnderlineTo(btnNews.current); }}>
               News
             </Link>
 
-            {/* Unterstreichungs-Indikator */}
-            <div className="pointer-events-none absolute bottom-0 left-0 h-[2px] bg-orange-400 transition-all duration-200"
-                 style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)` }}
+            {/* Underline-Indikator */}
+            <div
+              className="pointer-events-none absolute bottom-0 left-0 h-[2px] bg-orange-400 transition-all duration-200"
+              style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)` }}
             />
           </div>
 
-          {/* rechts: Favoriten + Zahnrad */}
+          {/* rechts */}
           <div className="relative flex items-center gap-2">
             <Link href="/favorites" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Favoriten" title="Favoriten">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -174,14 +193,14 @@ export default function Navbar() {
             </Link>
             <Link href="/settings" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Einstellungen" title="Einstellungen">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l2.49-1a.49.49,0,0,0,1.63.94l.38,2.65a.49.49,0,0,0,.48.41h2.46a.49.49,0,0,0,.48-.41l.38-2.65a7.16,7.16,0,0,0,1.63-.94l2.49,1a.49.49,0,0,0,.6-.22l2-3.46a.48.48,0,0,0-.11-.61ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/>
+                <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l-"/>
               </svg>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* Submenu-Wrapper: nimmt Höhe ein → schiebt Inhalt runter */}
+      {/* SUB WRAPPER (push-down) */}
       <div
         ref={subWrapRef}
         className="mx-auto max-w-7xl px-4 overflow-hidden transition-[height] duration-200 ease-out"
@@ -189,54 +208,83 @@ export default function Navbar() {
         onMouseEnter={() => openMenu && scheduleOpen(openMenu)}
         onMouseLeave={scheduleClose}
       >
-        {/* Inner misst die tatsächliche Zielhöhe */}
         <div ref={subInnerRef}>
           {openMenu && (
             <div
-              className="relative rounded-2xl text-black shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
-              style={{
-                width: subWidth,
-                marginLeft: subLeft,
-                background: "linear-gradient(180deg,#f97316 0%, #fb923c 100%)"
-              }}
+              className="relative animate-menu-pop rounded-2xl border border-white/10 text-white shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
+              style={{ width: panelWidth, marginLeft: panelLeft, background: "linear-gradient(180deg,#f97316 0%, #ea580c 100%)" }}
             >
-              {/* Caret (kleines Dreieck) */}
-              <div
-                className="absolute -top-2 h-4 w-4 rotate-45"
-                style={{ left: caretLeft, background: "#f97316" }}
-              />
+              {/* Caret */}
+              <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: "#f97316" }}/>
 
-              {/* Inhalt */}
+              {/* Inhalte schön mit Icons */}
               {openMenu === "releases" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/releases/calendar" className="rounded-xl px-4 py-3 hover:bg-black/10">Release Calendar</Link>
-                  <Link href="/releases/this-week" className="rounded-xl px-4 py-3 hover:bg-black/10">This Week</Link>
+                  <Link href="/releases/calendar" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm13 6H4v12h16V8z"/></svg>
+                    </span> Release Calendar
+                  </Link>
+                  <Link href="/releases/this-week" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v14H3V5zm2 2v10h14V7H5z"/></svg>
+                    </span> This Week
+                  </Link>
                 </div>
               )}
 
               {openMenu === "popular" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/popular/best-of-year" className="rounded-xl px-4 py-3 hover:bg-black/10">Best of the Year</Link>
-                  <Link href="/popular/top-100" className="rounded-xl px-4 py-3 hover:bg-black/10">All-time Top 100</Link>
+                  <Link href="/popular/best-of-year" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    </span> Best of the Year
+                  </Link>
+                  <Link href="/popular/top-100" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17h4v-6H3v6zm6 0h4V7h-4v10zm6 0h4V4h-4v13z"/></svg>
+                    </span> All-time Top 100
+                  </Link>
                 </div>
               )}
 
               {openMenu === "platforms" && (
                 <div className="grid grid-cols-2 gap-2 p-3">
-                  <Link href="/platforms/pc" className="rounded-xl px-4 py-3 hover:bg-black/10">PC</Link>
-                  <Link href="/platforms/playstation" className="rounded-xl px-4 py-3 hover:bg-black/10">PlayStation</Link>
-                  <Link href="/platforms/xbox" className="rounded-xl px-4 py-3 hover:bg-black/10">Xbox</Link>
-                  <Link href="/platforms/nintendo-switch" className="rounded-xl px-4 py-3 hover:bg-black/10">Nintendo Switch</Link>
+                  <Link href="/platforms/pc" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v10H4zM2 18h20v2H2z"/></svg>
+                    </span> PC
+                  </Link>
+                  <Link href="/platforms/playstation" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="3"/><path d="M17 9v6h-2V9z"/></svg>
+                    </span> PlayStation
+                  </Link>
+                  <Link href="/platforms/xbox" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3 6 3 11s4 9 9 9 9-4 9-9-4-9-9-9z"/></svg>
+                    </span> Xbox
+                  </Link>
+                  <Link href="/platforms/nintendo-switch" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                    <span className="inline-block h-5 w-5">
+                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h5v18H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 0a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-5V3h5z"/></svg>
+                    </span> Nintendo Switch
+                  </Link>
                 </div>
               )}
 
               {openMenu === "genres" && (
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3">
-                  <Link href="/genres/rpg" className="rounded-xl px-4 py-3 hover:bg-black/10">RPG</Link>
-                  <Link href="/genres/action" className="rounded-xl px-4 py-3 hover:bg-black/10">Action</Link>
-                  <Link href="/genres/adventure" className="rounded-xl px-4 py-3 hover:bg-black/10">Adventure</Link>
-                  <Link href="/genres/indie" className="rounded-xl px-4 py-3 hover:bg-black/10">Indie</Link>
-                  <Link href="/genres/racing" className="rounded-xl px-4 py-3 hover:bg-black/10">Racing</Link>
+                  {[
+                    ["rpg","RPG"],["action","Action"],["adventure","Adventure"],
+                    ["indie","Indie"],["racing","Racing"]
+                  ].map(([slug,label])=>(
+                    <Link key={slug} href={`/genres/${slug}`} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
+                      <span className="inline-block h-5 w-5">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg>
+                      </span> {label}
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
