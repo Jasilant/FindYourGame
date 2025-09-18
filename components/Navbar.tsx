@@ -1,31 +1,16 @@
 'use client';
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const pathname = usePathname();
-  const active = pathname === href;
-  return (
-    <Link
-      href={href}
-      className={`px-2 py-1 rounded-lg transition ${
-        active ? "text-orange-500" : "opacity-90 hover:opacity-100"
-      }`}
-    >
-      {children}
-    </Link>
-  );
-}
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [lang, setLang] = useState<"de" | "en">("de");
   const menuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   const isLoggedIn = false; // TODO: mit echter Auth verdrahten
 
-  // Klick außerhalb schließt Menü
   useEffect(() => {
     const onDoc = (e: MouseEvent) => {
       if (!menuRef.current?.contains(e.target as Node)) setOpen(false);
@@ -33,6 +18,8 @@ export default function Navbar() {
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
+
+  const isActive = (href: string) => pathname === href ? "text-orange-500" : "opacity-90 hover:opacity-100";
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur">
@@ -43,11 +30,11 @@ export default function Navbar() {
           <span className="text-orange-500">.ch</span>
         </Link>
 
-        {/* Tabs mittig: Home → Filter → News */}
+        {/* Tabs: Home → Filter → News (statische Links = kein Typed-Routes-Ärger) */}
         <div className="hidden gap-6 md:flex">
-          <NavLink href="/">Home</NavLink>
-          <NavLink href="/filter">Filter</NavLink>
-          <NavLink href="/news">News</NavLink>
+          <Link href="/" className={`px-2 py-1 rounded-lg transition ${isActive("/")}`}>Home</Link>
+          <Link href="/filter" className={`px-2 py-1 rounded-lg transition ${isActive("/filter")}`}>Filter</Link>
+          <Link href="/news" className={`px-2 py-1 rounded-lg transition ${isActive("/news")}`}>News</Link>
         </div>
 
         {/* rechts: Favoriten + Zahnrad */}
@@ -88,7 +75,7 @@ export default function Navbar() {
               </button>
               <Link href="/settings" className="block rounded-xl px-3 py-2 hover:bg-white/10">Einstellungen</Link>
               <Link href="/profile" className="block rounded-xl px-3 py-2 hover:bg-white/10">Profil</Link>
-              {isLoggedIn && (
+              {false && ( // isLoggedIn ersetzen, wenn Auth da ist
                 <button className="block w-full rounded-xl px-3 py-2 text-left hover:bg-white/10">Ausloggen</button>
               )}
             </div>
