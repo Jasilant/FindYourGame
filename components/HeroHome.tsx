@@ -28,8 +28,8 @@ export default function HeroHome() {
           Suche nach Titel, Genre oder Plattform – finde sofort dein Match.
         </p>
 
-        {/* Suchleiste: reagiert auf Hover/Focus/Press */}
-        <form action="/filter" method="GET" className="w-full max-w-5xl animate-slide-up">
+        {/* Suchleiste: ZIEL JETZT /browse */}
+        <form action="/browse" method="GET" className="w-full max-w-5xl animate-slide-up">
           <div
             className="group flex items-center gap-3 rounded-[22px]
                        border border-white/12 ring-1 ring-white/12 bg-white/5
@@ -59,14 +59,14 @@ export default function HeroHome() {
           </div>
         </form>
 
-        {/* Beliebt-Chips */}
+        {/* Beliebt-Chips: jetzt zu /browse statt /filter */}
         <div className="mt-2 flex items-center gap-3 text-sm opacity-90 animate-fade-in">
           <span>Beliebt:</span>
           <div className="flex flex-wrap gap-2">
-            <Link href="/filter?genre=rpg"       className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">RPG</Link>
-            <Link href="/filter?platform=switch" className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Switch</Link>
-            <Link href="/filter?coop=1"          className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Co-op</Link>
-            <Link href="/filter?genre=indie"     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Indie</Link>
+            <Link href="/browse?genre=rpg"       className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">RPG</Link>
+            <Link href="/browse?platform=switch" className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Switch</Link>
+            <Link href="/browse?sort=rating"     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Top Rated</Link>
+            <Link href="/browse?genre=indie"     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Indie</Link>
           </div>
         </div>
       </div>
