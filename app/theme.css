@@ -1,0 +1,21 @@
+:root {
+  --brand:  #f97316; /* Orange (Primär)  */
+  --accent: #6366f1; /* Cyan (Sekundär)  */
+  --surface:#0b0b0b; /* Dark Surface     */
+  --panel:  #111317; /* Dunkles Panel BG */
+  --text:   #ffffff; /* Textfarbe        */
+}
+
+/* Helper: Markenverläufe & Utilities */
+.brand-gradient {
+  background: linear-gradient(180deg, var(--brand) 0%, var(--accent) 100%);
+}
+.panel-solid {
+  background-color: var(--brand);
+}
+.panel-gradient {
+  background: linear-gradient(180deg, var(--brand) 0%, #ea580c 100%);
+}
+.text-on-panel {
+  color: #fff;
+}

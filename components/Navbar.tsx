@@ -10,18 +10,15 @@ export default function Navbar() {
   const pathname = usePathname();
   const isActive = (href: string) => pathname === href ? "text-orange-400" : "opacity-90 hover:opacity-100";
 
-  // --- State / Timer ---------------------------------------------------------
   const [openMenu, setOpenMenu] = useState<MenuId>(null);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
 
-  // --- Refs ------------------------------------------------------------------
-  const barRef = useRef<HTMLDivElement>(null);          // gesamte Nav-Zeile
-  const rowRef = useRef<HTMLDivElement>(null);          // mittlere Link-Reihe (für Underline)
-  const subWrapRef = useRef<HTMLDivElement>(null);      // Wrapper unter der Leiste (height-transition)
-  const subInnerRef = useRef<HTMLDivElement>(null);     // misst tatsächliche Höhe
+  const barRef = useRef<HTMLDivElement>(null);
+  const rowRef = useRef<HTMLDivElement>(null);
+  const subWrapRef = useRef<HTMLDivElement>(null);
+  const subInnerRef = useRef<HTMLDivElement>(null);
 
-  // Trigger-Buttons (inkl. Home/News für Underline)
   const btnHome = useRef<HTMLAnchorElement>(null);
   const btnNews = useRef<HTMLAnchorElement>(null);
   const btnReleases = useRef<HTMLButtonElement>(null);
@@ -29,16 +26,13 @@ export default function Navbar() {
   const btnPlatforms= useRef<HTMLButtonElement>(null);
   const btnGenres   = useRef<HTMLButtonElement>(null);
 
-  // Layout: Panel-Zentrierung & Pushdown & Underline
   const [subHeight, setSubHeight] = useState(0);
   const [panelWidth, setPanelWidth] = useState(560);
   const [panelLeft, setPanelLeft] = useState(0);
   const [caretLeft, setCaretLeft] = useState(24);
-
   const [underlineLeft, setULeft]   = useState(0);
   const [underlineWidth, setUWidth] = useState(0);
 
-  // --- Hover Intent ----------------------------------------------------------
   const scheduleOpen = (id: MenuId) => {
     if (closeTimer.current) { window.clearTimeout(closeTimer.current); closeTimer.current = null; }
     if (openTimer.current) window.clearTimeout(openTimer.current);
@@ -50,7 +44,6 @@ export default function Navbar() {
     closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
   };
 
-  // Maus komplett außerhalb → schließen
   useEffect(() => {
     const onDocMove = (e: MouseEvent) => {
       const inBar  = !!barRef.current?.contains(e.target as Node);
@@ -61,14 +54,12 @@ export default function Navbar() {
     return () => document.removeEventListener("mousemove", onDocMove);
   }, []);
 
-  // Pushdown: Höhe animieren
   useLayoutEffect(() => {
     const content = subInnerRef.current;
     const target = openMenu ? (content?.scrollHeight ?? 0) : 0;
     setSubHeight(target);
   }, [openMenu]);
 
-  // Panel mittig unter Trigger positionieren (clamped ins Container-Bounding)
   useLayoutEffect(() => {
     const wrap = subWrapRef.current;
     if (!wrap || !openMenu) return;
@@ -92,12 +83,10 @@ export default function Navbar() {
     const left   = Math.max(0, Math.min(center - width/2, containerRect.width - width));
     setPanelLeft(left);
 
-    // Caret mittig zum Button, aber innerhalb des Panels clampen
     const caret = Math.max(16, Math.min(center - left - 6, width - 16));
     setCaretLeft(caret);
   }, [openMenu]);
 
-  // Underline: fährt unter den aktiven Trigger
   function setUnderlineTo(el: HTMLElement | null) {
     const row = rowRef.current;
     if (!row || !el) return;
@@ -107,9 +96,7 @@ export default function Navbar() {
     setUWidth(e.width);
   }
 
-  // Underline beim Routenwechsel setzen
   useEffect(() => {
-    // mappe Pfad auf passenden Trigger
     if (pathname.startsWith("/releases")) setUnderlineTo(btnReleases.current);
     else if (pathname.startsWith("/popular")) setUnderlineTo(btnPopular.current);
     else if (pathname.startsWith("/platforms")) setUnderlineTo(btnPlatforms.current);
@@ -118,7 +105,6 @@ export default function Navbar() {
     else setUnderlineTo(btnHome.current);
   }, [pathname]);
 
-  // Underline beim Hover sofort zum Trigger fahren
   const onEnterTrigger = (id: MenuId) => {
     scheduleOpen(id);
     if (id === "releases") setUnderlineTo(btnReleases.current);
@@ -127,19 +113,15 @@ export default function Navbar() {
     if (id === "genres")   setUnderlineTo(btnGenres.current);
   };
 
-  // --- Render ----------------------------------------------------------------
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black">
-      {/* TOP BAR */}
       <nav ref={barRef} className="mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between py-3">
-          {/* Logo */}
           <Link href="/" className="text-xl font-extrabold">
             <span className="text-white">FindYourGame</span>
             <span className="text-orange-500">.ch</span>
           </Link>
 
-          {/* Mitte: Nav-Row */}
           <div ref={rowRef} className="relative hidden items-center gap-6 md:flex" onMouseLeave={scheduleClose}>
             <Link href="/" ref={btnHome}
               className={`px-2 py-1 rounded-lg transition ${isActive("/")}`}
@@ -177,30 +159,25 @@ export default function Navbar() {
               News
             </Link>
 
-            {/* Underline-Indikator */}
+            {/* Underline mit Theme-Farbe */}
             <div
-              className="pointer-events-none absolute bottom-0 left-0 h-[2px] bg-orange-400 transition-all duration-200"
-              style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)` }}
+              className="pointer-events-none absolute bottom-0 left-0 h-[2px] transition-all duration-200"
+              style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)`, background: 'var(--accent)' }}
             />
           </div>
 
-          {/* rechts */}
           <div className="relative flex items-center gap-2">
             <Link href="/favorites" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Favoriten" title="Favoriten">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 3.99 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 18.01 4 20 6 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-              </svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 3.99 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 18.01 4 20 6 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </Link>
             <Link href="/settings" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Einstellungen" title="Einstellungen">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                <path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l-"/>
-              </svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l2.49,1a.49.49,0,0,0,.6-.22l2-3.46a.48.48,0,0,0-.11-.61ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
             </Link>
           </div>
         </div>
       </nav>
 
-      {/* SUB WRAPPER (push-down) */}
+      {/* Submenu (schiebt Content) */}
       <div
         ref={subWrapRef}
         className="mx-auto max-w-7xl px-4 overflow-hidden transition-[height] duration-200 ease-out"
@@ -211,64 +188,51 @@ export default function Navbar() {
         <div ref={subInnerRef}>
           {openMenu && (
             <div
-              className="relative animate-menu-pop rounded-2xl border border-white/10 text-white shadow-[0_30px_80px_rgba(0,0,0,0.45)]"
-              style={{ width: panelWidth, marginLeft: panelLeft, background: "linear-gradient(180deg,#f97316 0%, #ea580c 100%)" }}
+              className="relative rounded-2xl border border-white/10 text-on-panel shadow-[0_30px_80px_rgba(0,0,0,0.45)] brand-gradient"
+              style={{ width: panelWidth, marginLeft: panelLeft }}
             >
-              {/* Caret */}
-              <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: "#f97316" }}/>
+              {/* Caret mit Brand-Farbe */}
+              <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: 'var(--brand)' }}/>
 
-              {/* Inhalte schön mit Icons */}
               {openMenu === "releases" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/releases/calendar" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm13 6H4v12h16V8z"/></svg>
-                    </span> Release Calendar
+                  <Link href="/releases/calendar" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm13 6H4v12h16V8z"/></svg></span>
+                    Release Calendar
                   </Link>
-                  <Link href="/releases/this-week" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v14H3V5zm2 2v10h14V7H5z"/></svg>
-                    </span> This Week
+                  <Link href="/releases/this-week" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v14H3V5zm2 2v10h14V7H5z"/></svg></span>
+                    This Week
                   </Link>
                 </div>
               )}
 
               {openMenu === "popular" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/popular/best-of-year" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-                    </span> Best of the Year
+                  <Link href="/popular/best-of-year" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>
+                    Best of the Year
                   </Link>
-                  <Link href="/popular/top-100" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17h4v-6H3v6zm6 0h4V7h-4v10zm6 0h4V4h-4v13z"/></svg>
-                    </span> All-time Top 100
+                  <Link href="/popular/top-100" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17h4v-6H3v6zm6 0h4V7h-4v10zm6 0h4V4h-4v13z"/></svg></span>
+                    All-time Top 100
                   </Link>
                 </div>
               )}
 
               {openMenu === "platforms" && (
                 <div className="grid grid-cols-2 gap-2 p-3">
-                  <Link href="/platforms/pc" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v10H4zM2 18h20v2H2z"/></svg>
-                    </span> PC
+                  <Link href="/platforms/pc" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v10H4zM2 18h20v2H2z"/></svg></span> PC
                   </Link>
-                  <Link href="/platforms/playstation" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="3"/><path d="M17 9v6h-2V9z"/></svg>
-                    </span> PlayStation
+                  <Link href="/platforms/playstation" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="3"/><path d="M17 9v6h-2V9z"/></svg></span> PlayStation
                   </Link>
-                  <Link href="/platforms/xbox" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3 6 3 11s4 9 9 9 9-4 9-9-4-9-9-9z"/></svg>
-                    </span> Xbox
+                  <Link href="/platforms/xbox" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3 6 3 11s4 9 9 9 9-4 9-9-4-9-9-9z"/></svg></span> Xbox
                   </Link>
-                  <Link href="/platforms/nintendo-switch" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                    <span className="inline-block h-5 w-5">
-                      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h5v18H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 0a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-5V3h5z"/></svg>
-                    </span> Nintendo Switch
+                  <Link href="/platforms/nintendo-switch" className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h5v18H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 0a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-5V3h5z"/></svg></span> Nintendo Switch
                   </Link>
                 </div>
               )}
@@ -279,10 +243,8 @@ export default function Navbar() {
                     ["rpg","RPG"],["action","Action"],["adventure","Adventure"],
                     ["indie","Indie"],["racing","Racing"]
                   ].map(([slug,label])=>(
-                    <Link key={slug} href={`/genres/${slug}`} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
-                      <span className="inline-block h-5 w-5">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg>
-                      </span> {label}
+                    <Link key={slug} href={`/genres/${slug}`} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                      <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg></span> {label}
                     </Link>
                   ))}
                 </div>
