@@ -1,8 +1,10 @@
-import type { NextConfig } from 'next';
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
-  typedRoutes: true,
+  eslint: {
+    // Linting NICHT im Build/Deploy ausführen → vermeidet Rushstack-Patch-Warnung
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;
