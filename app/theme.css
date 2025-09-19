@@ -1,21 +1,31 @@
 :root {
   --brand:  #f97316; /* Orange (Primär)  */
-  --accent: #6366f1; /* Cyan (Sekundär)  */
+  --accent: #06b6d4; /* Cyan (Sekundär)  */
   --surface:#0b0b0b; /* Dark Surface     */
   --panel:  #111317; /* Dunkles Panel BG */
   --text:   #ffffff; /* Textfarbe        */
+
+  /* SVG-Noise als Data-URL (leicht, wiederholend) */
+  --noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='linear' slope='0.05'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='64' height='64' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Helper: Markenverläufe & Utilities */
-.brand-gradient {
-  background: linear-gradient(180deg, var(--brand) 0%, var(--accent) 100%);
+/* Hilfsklassen */
+.text-on-panel { color: var(--text); }
+
+/* Verlauf + Noise oben drüber (Overlay) */
+.panel-bg {
+  background-image: var(--noise), linear-gradient(180deg, var(--brand) 0%, var(--accent) 100%);
+  background-blend-mode: overlay, normal;
+  background-size: auto, cover;
+  background-repeat: repeat, no-repeat;
 }
-.panel-solid {
-  background-color: var(--brand);
-}
-.panel-gradient {
-  background: linear-gradient(180deg, var(--brand) 0%, #ea580c 100%);
-}
-.text-on-panel {
-  color: #fff;
+
+/* falls du lieber Voll-Orange willst: */
+.panel-solid { background-color: var(--brand); }
+
+/* Optionaler leichter Innen-Glare */
+.panel-elev {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    0 30px 80px rgba(0,0,0,0.45);
 }

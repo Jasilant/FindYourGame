@@ -74,15 +74,18 @@ export default function Navbar() {
 
     const btnRect = btn.getBoundingClientRect();
 
+    // Breite anpassen: Genres breiter für 4 Spalten
     const width =
-      openMenu === "genres"    ? 760 :
+      openMenu === "genres"    ? 880 :
       openMenu === "platforms" ? 620 : 560;
     setPanelWidth(width);
 
+    // mittig unter dem Trigger (geclamped im Container)
     const center = btnRect.left - containerRect.left + btnRect.width/2;
     const left   = Math.max(0, Math.min(center - width/2, containerRect.width - width));
     setPanelLeft(left);
 
+    // Caret zentriert zum Trigger, aber im Panel begrenzt
     const caret = Math.max(16, Math.min(center - left - 6, width - 16));
     setCaretLeft(caret);
   }, [openMenu]);
@@ -159,7 +162,7 @@ export default function Navbar() {
               News
             </Link>
 
-            {/* Underline mit Theme-Farbe */}
+            {/* Underline nutzt Accent-Farbe */}
             <div
               className="pointer-events-none absolute bottom-0 left-0 h-[2px] transition-all duration-200"
               style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)`, background: 'var(--accent)' }}
@@ -171,7 +174,7 @@ export default function Navbar() {
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 3.99 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 18.01 4 20 6 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </Link>
             <Link href="/settings" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Einstellungen" title="Einstellungen">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l2.49,1a.49.49,0,0,0,.6-.22l2-3.46a.48.48,0,0,0-.11-.61ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M19.14,12.94a7.43,7.43,0,0,0,.05-.94,7.43,7.43,0,0,0-.05-.94l2.11-1.65a.48.48,0,0,0,.11-.61l-2-3.46a.49.49,0,0,0-.6-.22l-2.49,1a7.16,7.16,0,0,0-1.63-.94l-.38-2.65A.49.49,0,0,0,12.23,2H9.77a.49.49,0,0,0-.48.41L9,5.06a7.16,7.16,0,0,0-1.63.94l-2.49-1a.49.49,0,0,0-.6.22l-2,3.46a.48.48,0,0,0,.11.61L4.91,11.06a7.43,7.43,0,0,0-.05.94,7.43,7.43,0,0,0,.05.94L2.8,14.59a.48.48,0,0,0-.11.61l2,3.46a.49.49,0,0,0,.6.22l2-3.46a.48.48,0,0,0-.11-.61ZM12,15.5A3.5,3.5,0,1,1,15.5,12,3.5,3.5,0,0,1,12,15.5Z"/></svg>
             </Link>
           </div>
         </div>
@@ -188,10 +191,10 @@ export default function Navbar() {
         <div ref={subInnerRef}>
           {openMenu && (
             <div
-              className="relative rounded-2xl border border-white/10 text-on-panel shadow-[0_30px_80px_rgba(0,0,0,0.45)] brand-gradient"
+              className="relative animate-menu-pop rounded-2xl border border-white/10 text-on-panel panel-bg panel-elev"
               style={{ width: panelWidth, marginLeft: panelLeft }}
             >
-              {/* Caret mit Brand-Farbe */}
+              {/* Caret in Brand-Farbe */}
               <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: 'var(--brand)' }}/>
 
               {openMenu === "releases" && (
@@ -238,10 +241,10 @@ export default function Navbar() {
               )}
 
               {openMenu === "genres" && (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 p-3">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 p-3">
                   {[
-                    ["rpg","RPG"],["action","Action"],["adventure","Adventure"],
-                    ["indie","Indie"],["racing","Racing"]
+                    ["rpg","RPG"],["action","Action"],["adventure","Adventure"],["indie","Indie"],
+                    ["racing","Racing"],["rts","RTS"],["strategy","Strategy"],["shooter","Shooter"],
                   ].map(([slug,label])=>(
                     <Link key={slug} href={`/genres/${slug}`} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
                       <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg></span> {label}
