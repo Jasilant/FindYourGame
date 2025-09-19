@@ -125,7 +125,7 @@ export default function Navbar() {
           {/* BRAND */}
           <Link href="/" className="group flex items-center gap-2">
             <img
-              src="/logo-fox-pixel.svg"
+              src="/logo-fox-pixel-coarse.svg"
               alt=""
               className="h-7 w-7 transition-transform duration-200 group-hover:-translate-y-[1px] group-active:scale-95"
             />
