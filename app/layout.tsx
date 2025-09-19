@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react"
 import "./globals.css";
 import "./theme.css";
 import type { Metadata } from "next";
@@ -14,14 +13,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
-<Analytics />
       <body>
         <Navbar />
         {children}
         {/* Vercel Analytics + Speed Insights */}
-        <Analytics />
         <SpeedInsights />
       </body>
+        <Analytics />
     </html>
   );
 }
