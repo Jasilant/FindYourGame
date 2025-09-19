@@ -1,8 +1,3 @@
-cd /c/Users/arnoj/Dev/findyourgame
-pwd   # MUSS auf .../findyourgame enden
-
-# Datei komplett neu/überschreiben:
-cat > components/Navbar.tsx <<'TSX'
 'use client';
 
 import Link from "next/link";
@@ -127,7 +122,7 @@ export default function Navbar() {
       <nav ref={barRef} className="mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between py-3">
 
-          {/* BRAND: Fox-Logo + Wortmarke */}
+          {/* BRAND */}
           <Link href="/" className="group flex items-center gap-2">
             <img
               src="/mark-fox-outline.svg"
@@ -279,4 +274,3 @@ export default function Navbar() {
     </header>
   );
 }
-TSX
