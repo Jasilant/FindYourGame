@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { trackEvent } from "../lib/analytics";
 
 export default function HeroHome() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,9 +15,13 @@ export default function HeroHome() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    const q = (e.currentTarget.querySelector("input[name='q']") as HTMLInputElement | null)?.value?.trim() || "";
+    trackEvent("search", { q, source: "hero" });
+  }
+
   return (
     <section className="relative isolate">
-      {/* sanfter Moving-Glow */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_60%_at_50%_0%,rgba(255,255,255,0.08),rgba(0,0,0,0))]" />
       <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-4 pt-10 pb-20 text-center md:gap-7 md:pt-14 md:pb-24">
         <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.08] tracking-tight">
@@ -27,8 +32,7 @@ export default function HeroHome() {
           Suche nach Titel, Genre oder Plattform – finde sofort dein Match.
         </p>
 
-        {/* Suchleiste */}
-        <form action="/browse" method="GET" className="w-full max-w-5xl">
+        <form action="/browse" method="GET" onSubmit={handleSubmit} className="w-full max-w-5xl">
           <div
             className="group flex items-center gap-3 rounded-[22px]
                        border border-white/12 ring-1 ring-white/12 bg-white/5
@@ -57,14 +61,13 @@ export default function HeroHome() {
           </div>
         </form>
 
-        {/* Beliebt-Chips */}
         <div className="mt-2 flex items-center gap-3 text-sm opacity-90">
           <span>Beliebt:</span>
           <div className="flex flex-wrap gap-2">
-            <Link href="/browse?genre=rpg"       className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">RPG</Link>
-            <Link href="/browse?platform=switch" className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Switch</Link>
-            <Link href="/browse?sort=rating"     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Top Rated</Link>
-            <Link href="/browse?genre=indie"     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Indie</Link>
+            <Link href="/browse?genre=rpg"       onClick={()=>trackEvent("chip_select",{kind:"genre",value:"rpg"})}       className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">RPG</Link>
+            <Link href="/browse?platform=switch" onClick={()=>trackEvent("chip_select",{kind:"platform",value:"switch"})} className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Switch</Link>
+            <Link href="/browse?sort=rating"     onClick={()=>trackEvent("chip_select",{kind:"sort",value:"rating"})}     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Top Rated</Link>
+            <Link href="/browse?genre=indie"     onClick={()=>trackEvent("chip_select",{kind:"genre",value:"indie"})}     className="rounded-full border border-white/25 px-3 py-1 hover:bg-white/10">Indie</Link>
           </div>
         </div>
       </div>
