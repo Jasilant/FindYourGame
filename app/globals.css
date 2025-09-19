@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-<<<<<<< HEAD
-/* globale Styles */
-:root { color-scheme: dark; }
-=======
-/* leichte Defaults */
-:root { color-scheme: dark; }
-html, body { height: 100%; }
-
-/* optional: Browser-Outline abschalten (nur Optik) */
-*:focus { outline: none !important; box-shadow: none !important; }
->>>>>>> feat/analytics-and-routes
+/* kleine Basis-Styles, sicher */
+:root { --brand: #f97316; --accent: #f97316; }
+html, body { background:#000; color:#fff; }
