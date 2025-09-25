@@ -12,6 +12,7 @@ function HoverMenu({
   items: { href: string; label: string }[];
 }) {
   const [open, setOpen] = useState(false);
+
   return (
     <div
       className="relative"
@@ -21,16 +22,17 @@ function HoverMenu({
       <span className="cursor-pointer opacity-90 hover:opacity-100">
         {label}
       </span>
+
       {open && (
-        <div className="absolute left-1/2 z-50 mt-3 w-[min(92vw,640px)] -translate-x-1/2 rounded-2xl border border-white/10 bg-black p-3 text-white shadow-xl ring-1 ring-white/15">
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+        <div className="menu-panel menu-open" style={{ width: "min(92vw, 640px)" }}>
+          <div className="menu-grid">
             {items.map((it) => (
               <Link
                 key={it.href}
                 href={it.href}
-                className="rounded-lg bg-white/5 px-3 py-2 hover:bg-white/10"
+                className="menu-item"
               >
-                {it.label}
+                <span>{it.label}</span>
               </Link>
             ))}
           </div>
@@ -51,15 +53,13 @@ export default function Navbar() {
 
         {/* Mitte: Tabs */}
         <div className="hidden items-center gap-6 md:flex">
-          <Link href="/" className="opacity-90 hover:opacity-100">
-            Home
-          </Link>
+          <Link href="/" className="opacity-90 hover:opacity-100">Home</Link>
 
           <HoverMenu
             label="Releases"
             items={[
               { href: "/releases/this-week", label: "This Week" },
-              { href: "/releases/calendar", label: "Release Calendar" }
+              { href: "/releases/calendar",   label: "Release Calendar" }
             ]}
           />
 
@@ -67,25 +67,25 @@ export default function Navbar() {
             label="Popular"
             items={[
               { href: "/popular/best-of-year", label: "Best of the Year" },
-              { href: "/popular/top-100", label: "All-time Top 100" }
+              { href: "/popular/top-100",      label: "All-time Top 100" }
             ]}
           />
 
           <HoverMenu
             label="Platforms"
             items={[
-              { href: "/platforms/pc", label: "PC" },
-              { href: "/platforms/playstation", label: "PlayStation" },
-              { href: "/platforms/xbox", label: "Xbox" },
+              { href: "/platforms/pc",              label: "PC" },
+              { href: "/platforms/playstation",     label: "PlayStation" },
+              { href: "/platforms/xbox",            label: "Xbox" },
               { href: "/platforms/nintendo-switch", label: "Nintendo Switch" }
             ]}
           />
 
-          {/* NEU: Genres mit „Kostenlos“ */}
+          {/* Genres mit Icons + 'Kostenlos' (sortiert) */}
           <GenresMenu />
         </div>
 
-        {/* Rechts: Favoriten & Einstellungen (simple) */}
+        {/* Rechts: Favoriten & Settings (einfach) */}
         <div className="flex items-center gap-3">
           <Link
             href="/favorites"
@@ -101,19 +101,10 @@ export default function Navbar() {
               ⚙
             </span>
             <div className="invisible absolute right-0 z-50 mt-2 w-52 rounded-2xl border border-white/10 bg-black p-2 text-white opacity-0 shadow-xl ring-1 ring-white/15 transition group-hover:visible group-hover:opacity-100">
-              <Link href="/settings" className="block rounded-lg px-3 py-2 hover:bg-white/10">
-                Einstellungen
-              </Link>
-              <Link href="/profile" className="block rounded-lg px-3 py-2 hover:bg-white/10">
-                Profil
-              </Link>
-              <Link href="/language" className="block rounded-lg px-3 py-2 hover:bg-white/10">
-                Sprache
-              </Link>
-              {/* Falls eingeloggt: */}
-              <button className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10">
-                Ausloggen
-              </button>
+              <Link href="/settings" className="block rounded-lg px-3 py-2 hover:bg-white/10">Einstellungen</Link>
+              <Link href="/profile"  className="block rounded-lg px-3 py-2 hover:bg-white/10">Profil</Link>
+              <Link href="/language" className="block rounded-lg px-3 py-2 hover:bg-white/10">Sprache</Link>
+              <button className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10">Ausloggen</button>
             </div>
           </div>
         </div>

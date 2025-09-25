@@ -330,3 +330,71 @@
   --page-bg: linear-gradient(180deg,#9d174d,#1a0e14 70%); }
 .theme-page--genre-free        { --accent:#34d399; --heading:#e6fff6; --text:#f5fffb;
   --page-bg: linear-gradient(180deg,#065f46,#0b1713 70%); }
+/* ====== NAV MEGA MENU: Panel & Items ====== */
+.menu-panel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  margin-top: 0.75rem; /* mt-3 */
+  width: min(92vw, 760px);
+  border-radius: 1rem; /* ~ rounded-2xl */
+  border: 1px solid rgba(255,255,255,0.10);
+  background: #050505; /* nicht transparent */
+  color: #fff;
+  box-shadow:
+    0 20px 40px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+
+/* Accent-Kante oben */
+.menu-panel::before {
+  content: "";
+  position: absolute; inset: 0;
+  height: 4px; top: 0;
+  background: linear-gradient(90deg, var(--accent, #f97316), transparent);
+}
+
+/* feines Noise-Overlay */
+.menu-panel::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' opacity='0.06' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* Drop-in Animation */
+@keyframes menuDropIn {
+  from { opacity: 0; transform: translate(-50%, -6px) scale(0.98); }
+  to   { opacity: 1; transform: translate(-50%, 0)    scale(1); }
+}
+.menu-open {
+  animation: menuDropIn 180ms ease-out both;
+}
+
+.menu-grid { display: grid; gap: .5rem; grid-template-columns: repeat(2,minmax(0,1fr)); }
+@media (min-width: 768px){ .menu-grid { grid-template-columns: repeat(3,minmax(0,1fr)); } }
+@media (min-width: 1024px){ .menu-grid { grid-template-columns: repeat(4,minmax(0,1fr)); } }
+
+.menu-item {
+  display: flex; align-items: center; gap: .6rem;
+  padding: .55rem .75rem; border-radius: .75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.menu-item:hover {
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.09);
+  border-color: rgba(255,255,255,0.16);
+}
+
+/* runde Icon-Kapsel, nimmt Accent-Farbe */
+.menu-icon {
+  width: 28px; height: 28px; border-radius: 9999px;
+  display: grid; place-items: center;
+  background: var(--accent, #f97316);
+  color: #000;
+}
