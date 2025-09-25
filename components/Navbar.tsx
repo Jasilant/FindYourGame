@@ -1,43 +1,68 @@
 'use client';
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import GenresMenu from "./GenresMenu";
 
+/* Wiederverwendbares Hover+Pin Dropdown */
 function HoverMenu({
   label,
-  items
+  items,
+  width = "min(92vw, 640px)"
 }: {
   label: string;
   items: { href: string; label: string }[];
+  width?: string;
 }) {
   const [open, setOpen] = useState(false);
+  const [pinned, setPinned] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!ref.current) return;
+      if (!ref.current.contains(e.target as Node)) {
+        setPinned(false);
+        setOpen(false);
+      }
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setPinned(false); setOpen(false); }
+    };
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("click", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
 
   return (
     <div
+      ref={ref}
       className="relative"
       onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseLeave={() => { if (!pinned) setOpen(false); }}
     >
-      <span className="cursor-pointer opacity-90 hover:opacity-100">
+      <button
+        type="button"
+        className="cursor-pointer opacity-90 hover:opacity-100"
+        onClick={() => { setPinned(v => !v); setOpen(true); }}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
         {label}
-      </span>
+      </button>
 
-      {open && (
-        <div className="menu-panel menu-open" style={{ width: "min(92vw, 640px)" }}>
-          <div className="menu-grid">
-            {items.map((it) => (
-              <Link
-                key={it.href}
-                href={it.href}
-                className="menu-item"
-              >
-                <span>{it.label}</span>
-              </Link>
-            ))}
-          </div>
+      <div className="menu-panel" data-open={open ? "true" : "false"} style={{ width }}>
+        <div className="menu-grid p-3">
+          {items.map((it) => (
+            <Link key={it.href} href={it.href} className="menu-item">
+              <span>{it.label}</span>
+            </Link>
+          ))}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -81,7 +106,7 @@ export default function Navbar() {
             ]}
           />
 
-          {/* Genres mit Icons + 'Kostenlos' (sortiert) */}
+          {/* Genres: sortiert + Icons + Hover/Klick-Pin */}
           <GenresMenu />
         </div>
 

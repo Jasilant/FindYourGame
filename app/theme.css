@@ -398,3 +398,16 @@
   background: var(--accent, #f97316);
   color: #000;
 }
+/* Offen/zu per ScaleY (weicher Aufklapp-Effekt) */
+.menu-panel {
+  transform-origin: top center;
+  transform: translateX(-50%) scaleY(1);
+  opacity: 1;
+  transition: transform 160ms ease-out, opacity 160ms ease-out;
+}
+
+.menu-panel[data-open="false"] {
+  transform: translateX(-50%) scaleY(0.96);
+  opacity: 0;
+  pointer-events: none;
+}
