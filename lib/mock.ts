@@ -73,12 +73,15 @@ export function mockGameDetail(slug: string): GameDetail {
   const price = (hash(slug) % 5 === 0) ? 0 : 59;
   const isFree = price === 0;
 
-  const genres = normalizeGenres({
-    genres: rawGenres,
-    tags: rawGenres,        // so tun als kämen sie auch als Tags
-    price,
-    isFree
-  });
+  // price / free (Demo-Logik)
+  let price = (hash(slug) % 5 === 0) ? 0 : 59;
+  let isFree = price === 0;
+
+  // NEU: alles, was mit "free-" beginnt, ist garantiert kostenlos
+  if (slug.startsWith("free-")) {
+    price = 0;
+    isFree = true;
+  }
 
   return {
     id: `game-${slug}`,
