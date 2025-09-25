@@ -19,12 +19,25 @@ export default function GameDetailPage({ params }: any) {
             <h1 className="text-3xl font-extrabold md:text-4xl">{g.name}</h1>
             <FavoriteButton game={{ id: g.id, name: g.name, slug: g.slug, image: g.hero }} />
           </div>
+
+          {/* PLATTFORMEN */}
           <div className="mt-3 flex flex-wrap gap-2 text-sm opacity-90">
             {g.platforms.map(p => (
               <span key={p} className="rounded-full border border-white/20 px-3 py-1">{p}</span>
             ))}
+          </div>
+
+          {/* GENRES (kanonisch) */}
+          <div className="mt-3 flex flex-wrap gap-2 text-sm">
             {g.genres.map(ge => (
-              <span key={ge} className="rounded-full border border-white/20 px-3 py-1">{ge}</span>
+              <a
+                key={ge}
+                href={`/genres/${ge}`}
+                className="rounded-full border border-white/25 px-3 py-1"
+                style={{ background: "var(--accent, transparent)", color: "black" }}
+              >
+                {ge}
+              </a>
             ))}
           </div>
         </div>
@@ -44,9 +57,10 @@ export default function GameDetailPage({ params }: any) {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h3 className="mb-2 font-bold">Key Facts</h3>
           <ul className="list-inside list-disc space-y-1 opacity-90">
-            <li>Single-/Multiplayer abhängig vom Titel</li>
-            <li>Unterstützte Plattformen: {g.platforms.join(", ")}</li>
+            <li>Single-/Multiplayer je nach Titel</li>
+            <li>Plattformen: {g.platforms.join(", ")}</li>
             <li>Genres: {g.genres.join(", ")}</li>
+            {g.price === 0 && <li>Kostenlos spielbar</li>}
           </ul>
         </div>
       </section>
@@ -86,16 +100,3 @@ export default function GameDetailPage({ params }: any) {
     </main>
   );
 }
-      {/* GENRES (kanonisch) */}
-      <div className="mt-3 flex flex-wrap gap-2 text-sm">
-        {g.genres.map(ge => (
-          <a
-            key={ge}
-            href={`/genres/${ge}`}
-            className="rounded-full border border-white/25 px-3 py-1"
-            style={{ background: "var(--accent, transparent)", color: "black" }}
-          >
-            {ge}
-          </a>
-        ))}
-      </div>
