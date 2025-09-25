@@ -86,3 +86,16 @@ export default function GameDetailPage({ params }: any) {
     </main>
   );
 }
+      {/* GENRES (kanonisch) */}
+      <div className="mt-3 flex flex-wrap gap-2 text-sm">
+        {g.genres.map(ge => (
+          <a
+            key={ge}
+            href={`/genres/${ge}`}
+            className="rounded-full border border-white/25 px-3 py-1"
+            style={{ background: "var(--accent, transparent)", color: "black" }}
+          >
+            {ge}
+          </a>
+        ))}
+      </div>

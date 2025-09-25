@@ -315,3 +315,18 @@
   --page-bg: linear-gradient(180deg, #22c55e, #0c1a10 70%); }
 .theme-page--genre-shooter   { --accent:#cbd5e1; --heading:#f2f6fb; --text:#f8fbff;
   --page-bg: linear-gradient(180deg, #94a3b8, #0c1117 70%); }
+/* Zusätzliche Genres */
+.theme-page--genre-puzzle      { --accent:#60a5fa; --heading:#eaf2ff; --text:#f7faff;
+  --page-bg: linear-gradient(180deg,#3b82f6,#0b1020 70%); }
+.theme-page--genre-platformer  { --accent:#fb7185; --heading:#ffeef1; --text:#fff6f8;
+  --page-bg: linear-gradient(180deg,#be123c,#1a0c12 70%); }
+.theme-page--genre-fighting    { --accent:#f43f5e; --heading:#ffecef; --text:#fff7f8;
+  --page-bg: linear-gradient(180deg,#7f1d1d,#12090a 70%); }
+.theme-page--genre-horror-survival { --accent:#a3e635; --heading:#f6ffe6; --text:#f9ffef;
+  --page-bg: linear-gradient(180deg,#0f172a,#0b0b0b 70%); }
+.theme-page--genre-sports      { --accent:#22c55e; --heading:#eafff1; --text:#f6fff9;
+  --page-bg: linear-gradient(180deg,#14532d,#0c1a10 70%); }
+.theme-page--genre-indie       { --accent:#f472b6; --heading:#ffe6f3; --text:#fff5fb;
+  --page-bg: linear-gradient(180deg,#9d174d,#1a0e14 70%); }
+.theme-page--genre-free        { --accent:#34d399; --heading:#e6fff6; --text:#f5fffb;
+  --page-bg: linear-gradient(180deg,#065f46,#0b1713 70%); }
