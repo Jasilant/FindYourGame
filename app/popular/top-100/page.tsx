@@ -7,4 +7,3 @@ export default function Page() {
   const games = mockPopularTop100();
   return <BrowseGrid title="All-time Top 100" games={games} />;
 }
-

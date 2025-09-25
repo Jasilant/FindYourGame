@@ -1,15 +1,9 @@
-  GNU nano 8.5           app/popular/best-of-year/page.tsx
-import GameGrid from "../../../components/GameGrid";
-import { generateMockGames } from "../../../lib/mockGames";
-export const dynamic = "force-dynamic";
+import BrowseGrid from "../../../components/BrowseGrid";
+import { mockPopularBestOfYear } from "../../../lib/mock";
 
-export default function BestOfYearPage() {
-  const games = generateMockGames(120).sort((a,b)=> b.rating - a.rating).slice(>
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
-      <h1 className="text-2xl font-bold">Best of the Year</h1>
-      <GameGrid games={games} />
-    </main>
-  );
+export const metadata = { title: "Best of the Year | FindYourGame" };
+
+export default function Page() {
+  const games = mockPopularBestOfYear();
+  return <BrowseGrid title="Best of the Year" games={games} />;
 }
-
