@@ -1,3 +1,4 @@
+import ThemedPage from "../../../components/ThemedPage";
 import ThemedHeader from "../../../components/ThemedHeader";
 import BrowseGrid from "../../../components/BrowseGrid";
 import { mockPlatforms } from "../../../lib/mock";
@@ -12,9 +13,9 @@ export default function Page({ params }: any) {
   };
   const title = `Platforms · ${labelMap[slug] ?? slug}`;
   return (
-    <>
+    <ThemedPage kind="platform" slug={slug}>
       <ThemedHeader kind="platform" slug={slug} title={title} />
       <BrowseGrid title={title} games={games} hideTitle />
-    </>
+    </ThemedPage>
   );
 }
