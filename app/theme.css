@@ -46,3 +46,8 @@
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 .animate-menu-pop { animation: menuPop .18s ease-out; }
+
+/* Mega-Menü: Links etwas dicker */
+.menu-panel a { 
+  font-weight: 600; /* semibold */
+}
