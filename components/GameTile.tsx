@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import FavoriteButton from "./FavoriteButton";
 
 export type GameTileData = {
   id: string;
@@ -11,7 +12,7 @@ export type GameTileData = {
 };
 
 export default function GameTile({ game }: { game: GameTileData }) {
-  const href = game.slug ? `/filter?q=${encodeURIComponent(game.name)}` : `/filter?q=${encodeURIComponent(game.name)}`;
+  const href = game.slug ? `/games/${game.slug}` : `/filter?q=${encodeURIComponent(game.name)}`;
   return (
     <Link
       href={href}
@@ -27,6 +28,13 @@ export default function GameTile({ game }: { game: GameTileData }) {
         ) : (
           <div className="flex h-full items-center justify-center opacity-60">{game.name}</div>
         )}
+
+        {/* Herz oben rechts */}
+        <div className="absolute right-3 top-3">
+          <FavoriteButton game={{ id: game.id, name: game.name, slug: game.slug, image: game.image, platform: game.platform }} size="sm" />
+        </div>
+
+        {/* subtiler Gradient unten */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/40 to-transparent" />
       </div>
 
