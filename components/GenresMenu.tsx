@@ -4,24 +4,24 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import type { CanonicalGenre } from "../lib/genres";
 
-/* Beliebtheitsscores (größer = beliebter) */
-const RAW: { slug: CanonicalGenre; label: string; score: number }[] = [
-  { slug: "action",           label: "Action",            score: 100 },
-  { slug: "shooter",          label: "Shooter",           score: 95  },
-  { slug: "rpg",              label: "RPG",               score: 92  },
-  { slug: "adventure",        label: "Abenteuer",         score: 88  },
-  { slug: "sports",           label: "Sport & Racing",    score: 84  },
-  { slug: "simulation",       label: "Simulation",        score: 80  },
-  { slug: "strategy",         label: "Strategie",         score: 78  },
-  { slug: "platformer",       label: "Plattformer",       score: 72  },
-  { slug: "indie",            label: "Indie",             score: 70  },
-  { slug: "puzzle",           label: "Puzzle",            score: 66  },
-  { slug: "horror-survival",  label: "Horror / Survival", score: 64  },
-  { slug: "fighting",         label: "Fighting",          score: 58  },
-  { slug: "free",             label: "Kostenlos",         score: 90  },
+/* Beliebtheitsscores */
+const RAW: { slug: CanonicalGenre; label: string; score: number; desc?: string }[] = [
+  { slug: "action",           label: "Action",            score: 100, desc: "Tempo & Skills" },
+  { slug: "shooter",          label: "Shooter",           score: 95,  desc: "Aim & Taktik" },
+  { slug: "rpg",              label: "RPG",               score: 92,  desc: "Story & Builds" },
+  { slug: "adventure",        label: "Abenteuer",         score: 88,  desc: "Erkunden & Rätsel" },
+  { slug: "sports",           label: "Sport & Racing",    score: 84,  desc: "Wettkampf & Pace" },
+  { slug: "simulation",       label: "Simulation",        score: 80,  desc: "Realismus & Systeme" },
+  { slug: "strategy",         label: "Strategie",         score: 78,  desc: "Zug/RTS & Macro" },
+  { slug: "platformer",       label: "Plattformer",       score: 72,  desc: "Präzise Sprünge" },
+  { slug: "indie",            label: "Indie",             score: 70,  desc: "Kreativ & frisch" },
+  { slug: "puzzle",           label: "Puzzle",            score: 66,  desc: "Knobeln & Logik" },
+  { slug: "horror-survival",  label: "Horror / Survival", score: 64,  desc: "Spannung & Ressourcen" },
+  { slug: "fighting",         label: "Fighting",          score: 58,  desc: "Matchups & Frames" },
+  { slug: "free",             label: "Kostenlos",         score: 90,  desc: "Free to Play" },
 ];
 
-/* Kleine, eingebaute Icons (ohne extra Lib) */
+/* kleine Icons (ohne Lib) */
 function GenreIcon({ slug }: { slug: CanonicalGenre }) {
   const c = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "currentColor" } as const;
   switch (slug) {
@@ -43,57 +43,51 @@ function GenreIcon({ slug }: { slug: CanonicalGenre }) {
 }
 
 export default function GenresMenu() {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [pinned, setPinned] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const timer = useRef<number | null>(null);
 
-  /* Panel offen lassen, wenn geklickt (Pin). Klick außerhalb/ESC schließt. */
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) {
-        setPinned(false);
-        setOpen(false);
-      }
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setPinned(false); setOpen(false); }
-    };
-    document.addEventListener("click", onDocClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("click", onDocClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, []);
+  const enter = () => { if (timer.current) { window.clearTimeout(timer.current); timer.current = null; } setOpen(true); };
+  const leave = () => { timer.current = window.setTimeout(() => setOpen(false), 140); };
+
+  useEffect(() => () => { if (timer.current) window.clearTimeout(timer.current); }, []);
 
   const GENRES = useMemo(() => [...RAW].sort((a,b)=>b.score - a.score), []);
 
   return (
     <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => { if (!pinned) setOpen(false); }}
+      ref={wrapRef}
+      className="relative menu-wrap"
+      data-open={open ? "true" : "false"}
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+      style={{ "--accent": "#f97316" } as React.CSSProperties}
     >
-      <button
-        type="button"
-        className="cursor-pointer opacity-90 hover:opacity-100"
-        onClick={() => { setPinned(v => !v); setOpen(true); }}
-        aria-expanded={open}
-        aria-haspopup="true"
-      >
-        Genres
-      </button>
+      <span className="cursor-pointer opacity-90 hover:opacity-100">Genres</span>
 
-      <div className="menu-panel" data-open={open ? "true" : "false"}>
-        <div className="menu-grid p-4">
-          {GENRES.map((g) => (
-            <Link key={g.slug} href={`/genres/${g.slug}`} className="menu-item">
-              <span className="menu-icon"><GenreIcon slug={g.slug} /></span>
-              <span>{g.label}</span>
-            </Link>
-          ))}
+      <div className="menu-caret" />
+      <div className="menu-panel">
+        <div className="menu-topline" />
+        <div className="menu-inner">
+          <div className="menu-header">
+            <div>
+              <div className="menu-title">Genres</div>
+              <div className="menu-sub">Finde genau deinen Vibe</div>
+            </div>
+          </div>
+
+          <div className="menu-grid">
+            {GENRES.map((g) => (
+              <Link key={g.slug} href={`/genres/${g.slug}`} className="menu-item">
+                <span className="menu-icon"><GenreIcon slug={g.slug} /></span>
+                <span className="menu-text">
+                  <span className="menu-label">{g.label}</span>
+                  <span className="menu-meta">{g.desc}</span>
+                </span>
+                <span className="menu-arrow">›</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

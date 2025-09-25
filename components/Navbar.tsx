@@ -4,63 +4,62 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import GenresMenu from "./GenresMenu";
 
-/* Wiederverwendbares Hover+Pin Dropdown */
-function HoverMenu({
+/* Wiederverwendbares Hover-Dropdown (ohne Klick-Pin, bleibt offen solange Maus drauf) */
+function HoverOnlyMenu({
   label,
   items,
-  width = "min(92vw, 640px)"
+  accent = "#f97316",
+  width = "min(92vw, 640px)",
+  sub = ""
 }: {
   label: string;
-  items: { href: string; label: string }[];
+  items: { href: string; label: string; desc?: string }[];
+  accent?: string;
   width?: string;
+  sub?: string;
 }) {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
-  const [pinned, setPinned] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const timer = useRef<number | null>(null);
 
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      if (!ref.current) return;
-      if (!ref.current.contains(e.target as Node)) {
-        setPinned(false);
-        setOpen(false);
-      }
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { setPinned(false); setOpen(false); }
-    };
-    document.addEventListener("click", onDocClick);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("click", onDocClick);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, []);
+  const enter = () => { if (timer.current) { window.clearTimeout(timer.current); timer.current = null; } setOpen(true); };
+  const leave = () => { timer.current = window.setTimeout(() => setOpen(false), 140); };
+  useEffect(() => () => { if (timer.current) window.clearTimeout(timer.current); }, []);
 
   return (
     <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => { if (!pinned) setOpen(false); }}
+      ref={wrapRef}
+      className="relative menu-wrap"
+      data-open={open ? "true" : "false"}
+      onMouseEnter={enter}
+      onMouseLeave={leave}
+      style={{ "--accent": accent } as React.CSSProperties}
     >
-      <button
-        type="button"
-        className="cursor-pointer opacity-90 hover:opacity-100"
-        onClick={() => { setPinned(v => !v); setOpen(true); }}
-        aria-expanded={open}
-        aria-haspopup="true"
-      >
-        {label}
-      </button>
+      <span className="cursor-pointer opacity-90 hover:opacity-100">{label}</span>
 
-      <div className="menu-panel" data-open={open ? "true" : "false"} style={{ width }}>
-        <div className="menu-grid p-3">
-          {items.map((it) => (
-            <Link key={it.href} href={it.href} className="menu-item">
-              <span>{it.label}</span>
-            </Link>
-          ))}
+      <div className="menu-caret" />
+      <div className="menu-panel" style={{ width }}>
+        <div className="menu-topline" />
+        <div className="menu-inner">
+          <div className="menu-header">
+            <div>
+              <div className="menu-title">{label}</div>
+              {sub && <div className="menu-sub">{sub}</div>}
+            </div>
+          </div>
+
+          <div className="menu-grid">
+            {items.map((it) => (
+              <Link key={it.href} href={it.href} className="menu-item">
+                <span className="menu-icon" />
+                <span className="menu-text">
+                  <span className="menu-label">{it.label}</span>
+                  {it.desc && <span className="menu-meta">{it.desc}</span>}
+                </span>
+                <span className="menu-arrow">›</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -80,33 +79,39 @@ export default function Navbar() {
         <div className="hidden items-center gap-6 md:flex">
           <Link href="/" className="opacity-90 hover:opacity-100">Home</Link>
 
-          <HoverMenu
+          <HoverOnlyMenu
             label="Releases"
+            accent="#22d3ee"
+            sub="Was ist frisch erschienen?"
             items={[
-              { href: "/releases/this-week", label: "This Week" },
-              { href: "/releases/calendar",   label: "Release Calendar" }
+              { href: "/releases/this-week", label: "This Week", desc: "Top Neuheiten dieser Woche" },
+              { href: "/releases/calendar",   label: "Release Calendar", desc: "Plane deine nächsten Games" }
             ]}
           />
 
-          <HoverMenu
+          <HoverOnlyMenu
             label="Popular"
+            accent="#a78bfa"
+            sub="Fan-Favoriten & Evergreens"
             items={[
-              { href: "/popular/best-of-year", label: "Best of the Year" },
-              { href: "/popular/top-100",      label: "All-time Top 100" }
+              { href: "/popular/best-of-year", label: "Best of the Year", desc: "Die stärksten Titel 2025" },
+              { href: "/popular/top-100",      label: "All-time Top 100", desc: "Dauerbrenner & Klassiker" }
             ]}
           />
 
-          <HoverMenu
+          <HoverOnlyMenu
             label="Platforms"
+            accent="#34d399"
+            sub="Wähle deine Plattform"
             items={[
-              { href: "/platforms/pc",              label: "PC" },
-              { href: "/platforms/playstation",     label: "PlayStation" },
-              { href: "/platforms/xbox",            label: "Xbox" },
-              { href: "/platforms/nintendo-switch", label: "Nintendo Switch" }
+              { href: "/platforms/pc",              label: "PC",              desc: "Schwarz/Grau, Futur-Vibe" },
+              { href: "/platforms/playstation",     label: "PlayStation",     desc: "Blau, PS-Feeling" },
+              { href: "/platforms/xbox",            label: "Xbox",            desc: "Grün, Xbox-Look" },
+              { href: "/platforms/nintendo-switch", label: "Nintendo Switch", desc: "Rot, Nintendo-Style" }
             ]}
           />
 
-          {/* Genres: sortiert + Icons + Hover/Klick-Pin */}
+          {/* Genres: hübsch, sortiert, Icons, Hover-only */}
           <GenresMenu />
         </div>
 
