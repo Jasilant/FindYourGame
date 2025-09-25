@@ -2,6 +2,7 @@ import "./globals.css";
 import "./theme.css";
 import type { Metadata } from "next";
 import Navbar from "../components/Navbar";
+import Providers from "../components/Providers";
 import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
@@ -14,8 +15,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de">
       <body>
-        <Navbar />
-        {children}
+        <Providers>
+          <Navbar />
+          {children}
+        </Providers>
         <Analytics />
       </body>
     </html>

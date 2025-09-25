@@ -4,11 +4,13 @@ import Link from "next/link";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { trackEvent } from "../lib/analytics";
+import { useFavorites } from "../lib/favorites";
 
 type MenuId = "releases" | "popular" | "platforms" | "genres" | null;
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { count } = useFavorites();
   const isActive = (href: string) => pathname === href ? "text-orange-400" : "opacity-90 hover:opacity-100";
 
   const [openMenu, setOpenMenu] = useState<MenuId>(null);
@@ -55,14 +57,12 @@ export default function Navbar() {
     return () => document.removeEventListener("mousemove", onDocMove);
   }, []);
 
-  // Höhe des Submenus smooth animieren (schiebt die Suche unten weiter runter)
   useLayoutEffect(() => {
     const content = subInnerRef.current;
     const target = openMenu ? (content?.scrollHeight ?? 0) : 0;
     setSubHeight(target);
   }, [openMenu]);
 
-  // Panel mittig unter dem Trigger positionieren (Viewport begrenzen)
   useLayoutEffect(() => {
     const wrap = subWrapRef.current;
     if (!wrap || !openMenu) return;
@@ -78,13 +78,12 @@ export default function Navbar() {
     const btnRect = btn.getBoundingClientRect();
 
     const width =
-      openMenu === "genres"    ? 880 :       // 4 Spalten
-      openMenu === "platforms" ? 620 :       // 2 Spalten
-                                  560;       // Standard
+      openMenu === "genres"    ? 880 :
+      openMenu === "platforms" ? 620 : 560;
     setPanelWidth(width);
 
-    const center = btnRect.left - containerRect.left + btnRect.width / 2;
-    const left   = Math.max(0, Math.min(center - width / 2, containerRect.width - width));
+    const center = btnRect.left - containerRect.left + btnRect.width/2;
+    const left   = Math.max(0, Math.min(center - width/2, containerRect.width - width));
     setPanelLeft(left);
 
     const caret = Math.max(16, Math.min(center - left - 6, width - 16));
@@ -124,8 +123,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black">
       <nav ref={barRef} className="mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between py-3">
-
-          {/* BRAND: Fuchs-Logo + Wortmarke */}
+          {/* BRAND */}
           <Link href="/" className="group flex items-center gap-2">
             <img
               src="/logo-fox-pixel-coarse.svg"
@@ -176,7 +174,6 @@ export default function Navbar() {
               News
             </Link>
 
-            {/* Unterstreich-Indicator */}
             <div
               className="pointer-events-none absolute bottom-0 left-0 h-[2px] transition-all duration-200"
               style={{ width: underlineWidth, transform: `translateX(${underlineLeft}px)`, background: 'var(--accent)' }}
@@ -185,10 +182,17 @@ export default function Navbar() {
 
           {/* RIGHT: Favorites + Settings */}
           <div className="relative flex items-center gap-2">
-            <Link href="/favorites" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Favoriten" title="Favoriten">
+            <Link href="/favorites" className="group relative rounded-xl border border-white/15 p-1.5 opacity-90 transition hover:opacity-100" aria-label="Favoriten" title="Favoriten">
+              {/* Herz */}
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 6 3.99 4 6.5 4c1.74 0 3.41.81 4.5 2.09C12.09 4.81 13.76 4 15.5 4 18.01 4 20 6 20 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
+              {/* Badge */}
+              {count > 0 && (
+                <span className="absolute -right-2 -top-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[11px] font-bold text-black">
+                  {count}
+                </span>
+              )}
             </Link>
             <Link href="/settings" className="rounded-xl border border-white/15 p-1.5 opacity-90 hover:opacity-100 transition" aria-label="Einstellungen" title="Einstellungen">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
@@ -199,7 +203,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Submenu (schiebt Content nach unten) */}
+      {/* Submenu */}
       <div
         ref={subWrapRef}
         className="mx-auto max-w-7xl px-4 overflow-hidden transition-[height] duration-200 ease-out"
@@ -213,7 +217,6 @@ export default function Navbar() {
               className="relative animate-menu-pop menu-panel menu-noise"
               style={{ width: panelWidth, marginLeft: panelLeft }}
             >
-              {/* caret/„Schnabel“ in Panel-Farbe */}
               <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: 'var(--menu-bg)', borderTopLeftRadius: 3 }} />
 
               {openMenu === "releases" && (
