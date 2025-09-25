@@ -1,4 +1,3 @@
-cat > lib/mock.ts <<'TS'
 import { normalizeGenres, type CanonicalGenre } from "./genres";
 
 export type BrowseGame = {
@@ -75,7 +74,7 @@ export function mockGameDetail(slug: string): GameDetail {
     slug
   );
 
-  // Preis / Free-Logik (GENAU EIN MAL deklarieren!)
+  // Preis / Free-Logik
   let price: number | null = (hash(slug) % 5 === 0) ? 0 : 59;
   if (slug.startsWith("free-")) {
     price = 0;
@@ -129,4 +128,3 @@ function pickSome(pool: string[], seed: string) {
   if (out.length===0) out.push("Action");
   return out;
 }
-TS
