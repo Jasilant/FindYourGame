@@ -218,11 +218,11 @@ export default function Navbar() {
 
               {openMenu === "releases" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/releases/calendar" onClick={t("releases","calendar")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/releases/calendar" onClick={t("releases","calendar")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 2h2v2h6V2h2v2h3v18H4V4h3V2zm13 6H4v12h16V8z"/></svg></span>
                     Release Calendar
                   </Link>
-                  <Link href="/releases/this-week" onClick={t("releases","this-week")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/releases/this-week" onClick={t("releases","this-week")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v14H3V5zm2 2v10h14V7H5z"/></svg></span>
                     This Week
                   </Link>
@@ -231,11 +231,11 @@ export default function Navbar() {
 
               {openMenu === "popular" && (
                 <div className="grid gap-2 p-3">
-                  <Link href="/popular/best-of-year" onClick={t("popular","best-of-year")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/popular/best-of-year" onClick={t("popular","best-of-year")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></span>
                     Best of the Year
                   </Link>
-                  <Link href="/popular/top-100" onClick={t("popular","top-100")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/popular/top-100" onClick={t("popular","top-100")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 17h4v-6H3v6zm6 0h4V7h-4v10zm6 0h4V4h-4v13z"/></svg></span>
                     All-time Top 100
                   </Link>
@@ -244,16 +244,16 @@ export default function Navbar() {
 
               {openMenu === "platforms" && (
                 <div className="grid grid-cols-2 gap-2 p-3">
-                  <Link href="/platforms/pc" onClick={t("platforms","pc")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/platforms/pc" onClick={t("platforms","pc")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v10H4zM2 18h20v2H2z"/></svg></span> PC
                   </Link>
-                  <Link href="/platforms/playstation" onClick={t("platforms","playstation")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/platforms/playstation" onClick={t("platforms","playstation")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="12" r="3"/><path d="M17 9v6h-2V9z"/></svg></span> PlayStation
                   </Link>
-                  <Link href="/platforms/xbox" onClick={t("platforms","xbox")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/platforms/xbox" onClick={t("platforms","xbox")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C7 2 3 6 3 11s4 9 9 9 9-4 9-9-4-9-9-9z"/></svg></span> Xbox
                   </Link>
-                  <Link href="/platforms/nintendo-switch" onClick={t("platforms","nintendo-switch")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                  <Link href="/platforms/nintendo-switch" onClick={t("platforms","nintendo-switch")} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                     <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h5v18H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm10 0a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4h-5V3h5z"/></svg></span> Nintendo Switch
                   </Link>
                 </div>
@@ -265,7 +265,7 @@ export default function Navbar() {
                     ["rpg","RPG"],["action","Action"],["adventure","Adventure"],["indie","Indie"],
                     ["racing","Racing"],["rts","RTS"],["strategy","Strategy"],["shooter","Shooter"],
                   ].map(([slug,label])=>(
-                    <Link key={slug} href={`/genres/${slug}`} onClick={t("genres", slug)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-black/10">
+                    <Link key={slug} href={`/genres/${slug}`} onClick={t("genres", slug)} className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-white/10">
                       <span className="inline-block h-5 w-5"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 4h16v16H4z"/></svg></span> {label}
                     </Link>
                   ))}
