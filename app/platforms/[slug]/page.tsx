@@ -1,27 +1,18 @@
-import GameGrid from "../../../components/GameGrid";
-import { generateMockGames } from "../../../lib/mockGames";
+import BrowseGrid from "../../../components/BrowseGrid";
+import { mockPlatforms } from "../../../lib/mock";
 
-export const dynamic = "force-dynamic";
+export const metadata = { title: "Platforms | FindYourGame" };
 
-function mapSlug(slug: string): "pc" | "ps5" | "xbox" | "switch" | null {
-  const s = slug.toLowerCase();
-  if (s === "pc") return "pc";
-  if (s === "playstation" || s === "ps" || s === "ps5") return "ps5";
-  if (s === "xbox" || s === "x-box") return "xbox";
-  if (s === "nintendo-switch" || s === "switch") return "switch";
-  return null;
-}
-
-export default async function PlatformPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const key = mapSlug(slug);
-  const all = generateMockGames(200);
-  const list = key ? all.filter(g => g.platform === key).sort((a,b)=> b.rating - a.rating) : [];
-  const title = key ? (key === "ps5" ? "PlayStation" : key.toUpperCase()) : "Unbekannte Plattform";
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
-      <h1 className="text-2xl font-bold">{title}</h1>
-      <GameGrid games={list} />
-    </main>
-  );
+// absichtlich locker typisiert, um Next 15 TS-Signatur-Ärger zu vermeiden
+export default function Page({ params }: any) {
+  const slug: string = params?.slug ?? "pc";
+  const games = mockPlatforms(slug);
+  const labelMap: Record<string,string> = {
+    "pc": "PC",
+    "playstation": "PlayStation",
+    "xbox": "Xbox",
+    "nintendo-switch": "Nintendo Switch"
+  };
+  const title = `Platforms · ${labelMap[slug] ?? slug}`;
+  return <BrowseGrid title={title} games={games} />;
 }

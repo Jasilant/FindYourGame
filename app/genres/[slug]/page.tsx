@@ -1,18 +1,11 @@
-import GameGrid from "../../../components/GameGrid";
-import { generateMockGames, GENRES } from "../../../lib/mockGames";
+import BrowseGrid from "../../../components/BrowseGrid";
+import { mockGenres } from "../../../lib/mock";
 
-export const dynamic = "force-dynamic";
+export const metadata = { title: "Genres | FindYourGame" };
 
-export default async function GenrePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const g = slug.toLowerCase();
-  const valid = (GENRES as string[]).includes(g);
-  const all = generateMockGames(200);
-  const list = valid ? all.filter(x => x.genre === g).sort((a,b)=> b.rating - a.rating) : [];
-  return (
-    <main className="mx-auto max-w-7xl px-4 py-6 space-y-4">
-      <h1 className="text-2xl font-bold">Genre: {g.toUpperCase()}</h1>
-      <GameGrid games={list} />
-    </main>
-  );
+export default function Page({ params }: any) {
+  const slug: string = params?.slug ?? "rpg";
+  const games = mockGenres(slug);
+  const title = `Genres · ${slug.charAt(0).toUpperCase()}${slug.slice(1)}`;
+  return <BrowseGrid title={title} games={games} />;
 }
