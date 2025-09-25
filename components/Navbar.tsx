@@ -55,12 +55,14 @@ export default function Navbar() {
     return () => document.removeEventListener("mousemove", onDocMove);
   }, []);
 
+  // Höhe des Submenus smooth animieren (schiebt die Suche unten weiter runter)
   useLayoutEffect(() => {
     const content = subInnerRef.current;
     const target = openMenu ? (content?.scrollHeight ?? 0) : 0;
     setSubHeight(target);
   }, [openMenu]);
 
+  // Panel mittig unter dem Trigger positionieren (Viewport begrenzen)
   useLayoutEffect(() => {
     const wrap = subWrapRef.current;
     if (!wrap || !openMenu) return;
@@ -76,12 +78,13 @@ export default function Navbar() {
     const btnRect = btn.getBoundingClientRect();
 
     const width =
-      openMenu === "genres"    ? 880 :
-      openMenu === "platforms" ? 620 : 560;
+      openMenu === "genres"    ? 880 :       // 4 Spalten
+      openMenu === "platforms" ? 620 :       // 2 Spalten
+                                  560;       // Standard
     setPanelWidth(width);
 
-    const center = btnRect.left - containerRect.left + btnRect.width/2;
-    const left   = Math.max(0, Math.min(center - width/2, containerRect.width - width));
+    const center = btnRect.left - containerRect.left + btnRect.width / 2;
+    const left   = Math.max(0, Math.min(center - width / 2, containerRect.width - width));
     setPanelLeft(left);
 
     const caret = Math.max(16, Math.min(center - left - 6, width - 16));
@@ -122,7 +125,7 @@ export default function Navbar() {
       <nav ref={barRef} className="mx-auto max-w-7xl px-4">
         <div className="flex items-center justify-between py-3">
 
-          {/* BRAND */}
+          {/* BRAND: Fuchs-Logo + Wortmarke */}
           <Link href="/" className="group flex items-center gap-2">
             <img
               src="/logo-fox-pixel-coarse.svg"
@@ -207,10 +210,11 @@ export default function Navbar() {
         <div ref={subInnerRef}>
           {openMenu && (
             <div
-              className="relative animate-menu-pop rounded-2xl border border-white/10 text-on-panel panel-bg panel-elev"
+              className="relative animate-menu-pop menu-panel menu-noise"
               style={{ width: panelWidth, marginLeft: panelLeft }}
             >
-              <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: 'var(--brand)' }}/>
+              {/* caret/„Schnabel“ in Panel-Farbe */}
+              <div className="absolute -top-2 h-4 w-4 rotate-45" style={{ left: caretLeft, background: 'var(--menu-bg)', borderTopLeftRadius: 3 }} />
 
               {openMenu === "releases" && (
                 <div className="grid gap-2 p-3">
