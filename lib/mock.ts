@@ -1,3 +1,4 @@
+cat > lib/mock.ts <<'TS'
 import { normalizeGenres, type CanonicalGenre } from "./genres";
 
 export type BrowseGame = {
@@ -53,9 +54,9 @@ export type GameDetail = {
   short: string;
   platforms: string[];
   rawGenres: string[];           // Rohdaten (Simulation einer API)
-  genres: CanonicalGenre[];      // ← unsere kanonischen Genres
+  genres: CanonicalGenre[];      // kanonische Genres (inkl. 'free' bei gratis)
   releaseDate: string;
-  rating: number; // 0..100
+  rating: number;                // 0..100
   screenshots: string[];
   videos: { title: string; youtubeId: string }[];
   price?: number | null;
@@ -69,19 +70,24 @@ export function mockGameDetail(slug: string): GameDetail {
   const platforms = ["PC", "PlayStation", "Xbox", "Switch"].filter((_, i) => (hash(slug) + i) % 2 === 0);
 
   // simulierte Provider-Tags:
-  const rawGenres = pickSome(["Action","Adventure","RPG","Shooter","Strategy","Simulation","Sports","Racing","Platformer","Puzzle","Horror","Survival","Fighting","Indie"], slug);
-  const price = (hash(slug) % 5 === 0) ? 0 : 59;
-  const isFree = price === 0;
+  const rawGenres = pickSome(
+    ["Action","Adventure","RPG","Shooter","Strategy","Simulation","Sports","Racing","Platformer","Puzzle","Horror","Survival","Fighting","Indie"],
+    slug
+  );
 
-  // price / free (Demo-Logik)
-  let price = (hash(slug) % 5 === 0) ? 0 : 59;
-  let isFree = price === 0;
-
-  // NEU: alles, was mit "free-" beginnt, ist garantiert kostenlos
+  // Preis / Free-Logik (GENAU EIN MAL deklarieren!)
+  let price: number | null = (hash(slug) % 5 === 0) ? 0 : 59;
   if (slug.startsWith("free-")) {
     price = 0;
-    isFree = true;
   }
+  const isFree = price === 0;
+
+  const genres = normalizeGenres({
+    genres: rawGenres,
+    tags: rawGenres,   // als ob sie auch als Tags kämen
+    price,
+    isFree
+  });
 
   return {
     id: `game-${slug}`,
@@ -91,7 +97,7 @@ export function mockGameDetail(slug: string): GameDetail {
     short: "Kurze Beschreibung / Pitch des Spiels. Hier kommen Key Facts und der Ton deiner Marke zum Tragen.",
     platforms: platforms.length ? platforms : ["PC"],
     rawGenres,
-    genres,                // ← ab jetzt nutzen wir diese
+    genres,
     releaseDate: "2024-11-15",
     rating: 86,
     screenshots: [
@@ -109,6 +115,7 @@ export function mockGameDetail(slug: string): GameDetail {
   };
 }
 
+/* utils */
 function hash(s: string) {
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
@@ -122,3 +129,4 @@ function pickSome(pool: string[], seed: string) {
   if (out.length===0) out.push("Action");
   return out;
 }
+TS
