@@ -51,3 +51,139 @@
 .menu-panel a { 
   font-weight: 600; /* semibold */
 }
+/* ===========================
+   THEMED BANNERS (animated)
+   =========================== */
+.theme-banner { position: relative; background:#0b0b0b; }
+.theme-noise {
+  pointer-events: none; position: absolute; inset: 0;
+  background-image:
+    radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+    radial-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(0,0,0,0.08));
+  background-size: 6px 6px, 6px 6px, 100% 100%;
+  background-position: 0 0, 3px 3px, 0 0;
+  mix-blend-mode: overlay;
+}
+
+@keyframes floaty { 0% { transform: translateY(0) rotate(0deg) }
+  50% { transform: translateY(-8px) rotate(1.6deg) }
+  100% { transform: translateY(0) rotate(0deg) } }
+@keyframes panX { from { background-position: 0 0 } to { background-position: 400px 0 } }
+@keyframes panDiag { from { background-position: 0 0 } to { background-position: 320px 180px } }
+
+/* ---------- Platforms ---------- */
+/* PlayStation: tiefes Blau + „Symbol“-Blobs (kein Logo) */
+.theme--playstation {
+  background:
+    radial-gradient(60% 60% at 50% 0%, #0a2a6b 0%, transparent 60%),
+    linear-gradient(180deg, #0b36c9, #0b1020 70%);
+}
+.theme--playstation::before,
+.theme--playstation::after {
+  content:""; position:absolute; inset:-20%;
+  background:
+    radial-gradient(20% 20% at 30% 40%, rgba(255,255,255,0.10) 0%, transparent 70%),
+    radial-gradient(16% 16% at 70% 60%, rgba(255,255,255,0.08) 0%, transparent 70%),
+    radial-gradient(12% 12% at 55% 30%, rgba(10,130,255,0.20) 0%, transparent 70%);
+  filter: blur(2px);
+  animation: floaty 7s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+.theme--playstation::after { animation-duration: 10s; animation-delay: .3s; opacity:.7 }
+
+/* Xbox: lebendiges Grün */
+.theme--xbox {
+  background:
+    radial-gradient(60% 60% at 50% 0%, #0e2d12 0%, transparent 60%),
+    linear-gradient(180deg, #19b84b, #0c1a0f 70%);
+}
+.theme--xbox::before {
+  content:""; position:absolute; inset:-25%;
+  background:
+    radial-gradient(18% 18% at 30% 60%, rgba(255,255,255,0.12) 0%, transparent 70%),
+    radial-gradient(16% 16% at 70% 35%, rgba(18,200,80,0.25) 0%, transparent 70%);
+  animation: floaty 8s ease-in-out infinite;
+}
+
+/* Nintendo: kräftiges Rot */
+.theme--nintendo {
+  background:
+    radial-gradient(60% 60% at 50% 0%, #6b0a0a 0%, transparent 60%),
+    linear-gradient(180deg, #ff2d2d, #210909 70%);
+}
+.theme--nintendo::before {
+  content:""; position:absolute; inset:-22%;
+  background:
+    radial-gradient(20% 20% at 30% 50%, rgba(255,255,255,0.12) 0%, transparent 70%),
+    radial-gradient(14% 14% at 70% 50%, rgba(255,60,60,0.25) 0%, transparent 70%);
+  animation: floaty 7.5s ease-in-out infinite;
+}
+
+/* PC: dunkler „Futur“-Look (Grid + Scanlines) */
+.theme--pc {
+  background:
+    linear-gradient(180deg, #191c22, #0b0b0b 70%);
+}
+.theme--pc::before {
+  content:""; position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px),
+    repeating-linear-gradient(transparent, transparent 6px, rgba(255,255,255,0.03) 7px);
+  background-size: 40px 40px, 40px 40px, 100% 8px;
+  animation: panDiag 18s linear infinite;
+  mix-blend-mode: overlay;
+  opacity:.6;
+}
+
+/* Fallback für unbekannte Platform */
+.theme--platform {
+  background: linear-gradient(180deg, #444, #111 70%);
+}
+
+/* ---------- Popular / Releases ---------- */
+.theme--popular {
+  background:
+    radial-gradient(60% 60% at 50% 0%, #3d2605 0%, transparent 60%),
+    linear-gradient(180deg, #f3b13c, #1a1205 70%);
+}
+.theme--popular::before {
+  content:""; position:absolute; inset:-20%;
+  background:
+    radial-gradient(16% 16% at 30% 40%, rgba(255,255,255,0.12) 0%, transparent 70%),
+    radial-gradient(12% 12% at 70% 60%, rgba(255,200,80,0.28) 0%, transparent 70%);
+  animation: floaty 9s ease-in-out infinite;
+}
+
+.theme--releases {
+  background:
+    radial-gradient(60% 60% at 50% 0%, #1b0a3d 0%, transparent 60%),
+    linear-gradient(180deg, #8b5cf6, #0b0b16 70%);
+}
+.theme--releases::before {
+  content:""; position:absolute; inset:-20%;
+  background:
+    radial-gradient(16% 16% at 65% 45%, rgba(255,255,255,0.12) 0%, transparent 70%),
+    radial-gradient(14% 14% at 30% 65%, rgba(139,92,246,0.28) 0%, transparent 70%);
+  animation: floaty 10s ease-in-out infinite;
+}
+
+/* ---------- Genres (Beispiele) ---------- */
+.theme--genre-rpg      { background: linear-gradient(180deg, #6d28d9, #1a1030 70%); }
+.theme--genre-action   { background: linear-gradient(180deg, #f97316, #2a1205 70%); }
+.theme--genre-adventure{ background: linear-gradient(180deg, #06b6d4, #071b1e 70%); }
+.theme--genre-indie    { background: linear-gradient(180deg, #ec4899, #2a0e1e 70%); }
+.theme--genre-racing   { background: linear-gradient(180deg, #f59e0b, #231803 70%); }
+.theme--genre-rts      { background: linear-gradient(180deg, #0ea5e9, #081a24 70%); }
+.theme--genre-strategy { background: linear-gradient(180deg, #22c55e, #0c1a10 70%); }
+.theme--genre-shooter  { background: linear-gradient(180deg, #94a3b8, #0c1117 70%); }
+
+/* Alle Genre-Banner mit dezentem Float-Glow */
+[class*="theme--genre-"]::before {
+  content:""; position:absolute; inset:-18%;
+  background:
+    radial-gradient(14% 14% at 35% 55%, rgba(255,255,255,0.10) 0%, transparent 70%),
+    radial-gradient(12% 12% at 65% 35%, rgba(255,255,255,0.06) 0%, transparent 70%);
+  animation: floaty 11s ease-in-out infinite;
+}

@@ -1,3 +1,4 @@
+import ThemedHeader from "../../../components/ThemedHeader";
 import BrowseGrid from "../../../components/BrowseGrid";
 import { mockPopularBestOfYear } from "../../../lib/mock";
 
@@ -5,5 +6,10 @@ export const metadata = { title: "Best of the Year | FindYourGame" };
 
 export default function Page() {
   const games = mockPopularBestOfYear();
-  return <BrowseGrid title="Best of the Year" games={games} />;
+  return (
+    <>
+      <ThemedHeader kind="popular" title="Best of the Year" />
+      <BrowseGrid title="Best of the Year" games={games} hideTitle />
+    </>
+  );
 }
