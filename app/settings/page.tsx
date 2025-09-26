@@ -82,8 +82,16 @@ export default function SettingsPage() {
         <h2 className="mb-3 text-xl font-bold">Darstellung</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           {(['system','dark','light'] as const).map(opt => (
-            <label key={opt} className="flex items-center gap-3 rounded-xl border border-white/15 p-3 hover:border-orange-400">
-              <input type="radio" name="theme" checked={data.theme===opt} onChange={()=>setData({...data, theme: opt})}/>
+            <label
+              key={opt}
+              className="flex items-center gap-3 rounded-xl border border-white/15 p-3 hover:border-orange-400"
+            >
+              <input
+                type="radio"
+                name="theme"
+                checked={data.theme===opt}
+                onChange={()=>setData({...data, theme: opt})}
+              />
               <span className="capitalize">{opt}</span>
             </label>
           ))}
@@ -105,11 +113,19 @@ export default function SettingsPage() {
       <section className="mt-6 rounded-2xl border border-white/10 bg-black/50 p-4">
         <h2 className="mb-3 text-xl font-bold">Benachrichtigungen</h2>
         <label className="mb-2 flex items-center gap-3">
-          <input type="checkbox" checked={data.emailNews} onChange={e=>setData({...data, emailNews: e.target.checked})}/>
+          <input
+            type="checkbox"
+            checked={data.emailNews}
+            onChange={e=>setData({...data, emailNews: e.target.checked})}
+          />
           <span>E-Mail: News & Updates</span>
         </label>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={data.emailProduct} onChange={e=>setData({...data, emailProduct: e.target.checked})}/>
+          <input
+            type="checkbox"
+            checked={data.emailProduct}
+            onChange={e=>setData({...data, emailProduct: e.target.checked})}
+          />
           <span>E-Mail: Angebote & Aktionen</span>
         </label>
       </section>
@@ -118,17 +134,75 @@ export default function SettingsPage() {
       <section className="mt-6 rounded-2xl border border-white/10 bg-black/50 p-4">
         <h2 className="mb-3 text-xl font-bold">Datenschutz</h2>
         <label className="mb-2 flex items-center gap-3">
-          <input type="checkbox" checked={data.privacyPublicProfile} onChange={e=>setData({...data, privacyPublicProfile: e.target.checked})}/>
+          <input
+            type="checkbox"
+            checked={data.privacyPublicProfile}
+            onChange={e=>setData({...data, privacyPublicProfile: e.target.checked})}
+          />
           <span>Öffentliches Profil sichtbar</span>
         </label>
         <label className="mb-2 flex items-center gap-3">
-          <input type="checkbox" checked={data.privacySearchIndex} onChange={e=>setData({...data, privacySearchIndex: e.target.checked})}/>
+          <input
+            type="checkbox"
+            checked={data.privacySearchIndex}
+            onChange={e=>setData({...data, privacySearchIndex: e.target.checked})}
+          />
           <span>Profil in interner Suche auffindbar</span>
         </label>
         <label className="flex items-center gap-3">
-          <input type="checkbox" checked={data.trackingOptOut} onChange={e=>setData({...data, trackingOptOut: e.target.checked})}/>
+          <input
+            type="checkbox"
+            checked={data.trackingOptOut}
+            onChange={e=>setData({...data, trackingOptOut: e.target.checked})}
+          />
           <span>Tracking/Analytics deaktivieren (Opt-Out)</span>
         </label>
 
         <div className="mt-3 text-sm opacity-80">
-          Weitere Infos: <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link> · <Link href="/cookie-settings" className="text-orange-400 hover:underline">Cookie-Einstellungen</Link> · <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link> · <Link href="/imprint" cla
+          <span>Weitere Infos: </span>
+          <Link
+            href="/privacy-policy"
+            className="text-orange-400 hover:underline"
+          >
+            Datenschutzerklärung
+          </Link>
+          <span> · </span>
+          <Link
+            href="/cookie-settings"
+            className="text-orange-400 hover:underline"
+          >
+            Cookie-Einstellungen
+          </Link>
+          <span> · </span>
+          <Link
+            href="/terms"
+            className="text-orange-400 hover:underline"
+          >
+            AGB
+          </Link>
+          <span> · </span>
+          <Link
+            href="/imprint"
+            className="text-orange-400 hover:underline"
+          >
+            Impressum
+          </Link>
+        </div>
+      </section>
+
+      <div className="mt-6 flex gap-3">
+        <button
+          onClick={save}
+          className="rounded-xl bg-orange-500 px-4 py-2 font-semibold text-black hover:bg-orange-400"
+        >
+          Speichern
+        </button>
+        {msg && (
+          <span className="self-center rounded-xl border border-white/15 bg-white/5 px-3 py-2 text-sm">
+            {msg}
+          </span>
+        )}
+      </div>
+    </main>
+  );
+}
