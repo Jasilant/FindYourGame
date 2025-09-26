@@ -15,7 +15,6 @@ const LANGS: Lang[] = [
 ];
 
 const LS_LANG = 'findyourgame:lang';
-const LS_USER = 'findyourgame:user';
 const LS_AUTH = 'findyourgame:auth';
 
 export default function SettingsMenu() {
@@ -54,8 +53,10 @@ export default function SettingsMenu() {
     };
   }, []);
 
-  function onToggle() {
+  function onToggle(e: React.MouseEvent) {
+    e.stopPropagation();
     setOpen(v => !v);
+    if (open) setLangOpen(false);
   }
 
   function onLangPick(code: string) {
@@ -65,31 +66,22 @@ export default function SettingsMenu() {
   }
 
   function onLogout() {
-    try {
-      localStorage.removeItem(LS_AUTH);
-      // Behalte Profile/Einstellungen demohaft lokal, lösche nur Session:
-      // localStorage.removeItem(LS_USER);
-    } catch {}
+    try { localStorage.removeItem(LS_AUTH); } catch {}
+    setOpen(false);
     router.push('/login');
   }
 
   return (
-    <div
-      className="relative"
-      ref={ref}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => { /* bleibt offen, wenn geklickt */ }}
-    >
+    <div className="relative" ref={ref}>
       {/* Gear Button */}
       <button
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
-        onClick={(e) => { e.stopPropagation(); onToggle(); }}
+        onClick={onToggle}
         className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 hover:border-orange-400"
         title="Einstellungen"
       >
-        {/* einfache Gear-Icon SVG (ohne extra lib) */}
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.05.06a2 2 0 0 1-2.83 2.83l-.06-.05A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .55l-.06.06a2 2 0 0 1-2.83 0l-.06-.06a1.7 1.7 0 0 0-1-.55 1.7 1.7 0 0 0-1.87.34l-.06.05a2 2 0 0 1-2.83-2.83l.05-.06A1.7 1.7 0 0 0 4.6 15c0-.39-.14-.77-.39-1.06l-.05-.06a2 2 0 0 1 2.83-2.83l.06.05c.29.25.67.39 1.06.39s.77-.14 1.06-.39l.06-.05a2 2 0 0 1 2.83 0l.06.05c.29.25.67.39 1.06.39s.77-.14 1.06-.39l.06-.05a2 2 0 0 1 2.83 2.83l-.05.06c-.25.29-.39.67-.39 1.06Z" />
@@ -101,14 +93,14 @@ export default function SettingsMenu() {
         <div
           className="absolute right-0 z-40 mt-2 w-56 rounded-2xl border border-white/10 bg-black/90 p-2 shadow-xl backdrop-blur"
           role="menu"
-          onMouseEnter={() => setOpen(true)}
+          onClick={(e) => e.stopPropagation()}
         >
           {/* 1) Profil */}
           <Link
             href="/profile"
             className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-white/5"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); }}
           >
             <span>Profil</span>
             <span className="text-xs opacity-60">Konto</span>
@@ -119,20 +111,20 @@ export default function SettingsMenu() {
             href="/settings"
             className="mt-1 flex items-center justify-between rounded-xl px-3 py-2 hover:bg-white/5"
             role="menuitem"
-            onClick={() => setOpen(false)}
+            onClick={() => { setOpen(false); }}
           >
             <span>Einstellungen</span>
             <span className="text-xs opacity-60">Allgemein</span>
           </Link>
 
-          {/* 3) Sprache – klappt im Menü auf */}
+          {/* 3) Sprache – kleines Untermenü */}
           <div className="mt-1">
             <button
               type="button"
               className="flex w-full items-center justify-between rounded-xl px-3 py-2 hover:bg-white/5"
               aria-haspopup="true"
               aria-expanded={langOpen}
-              onClick={(e) => { e.stopPropagation(); setLangOpen(v => !v); }}
+              onClick={() => setLangOpen(v => !v)}
             >
               <span>Sprache</span>
               <span className="text-xs opacity-80">{LANGS.find(l => l.code === lang)?.label ?? 'Deutsch'}</span>

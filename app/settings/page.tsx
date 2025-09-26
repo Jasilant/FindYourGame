@@ -3,11 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const LS_LANG = 'findyourgame:lang';
 const LS_SETTINGS = 'findyourgame:settings';
 
 type SettingsData = {
-  lang: string;
   theme: 'system' | 'dark' | 'light';
   timezone: string;
   emailNews: boolean;
@@ -18,7 +16,6 @@ type SettingsData = {
 };
 
 const DEFAULTS: SettingsData = {
-  lang: 'de',
   theme: 'dark',
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Europe/Zurich',
   emailNews: true,
@@ -28,15 +25,6 @@ const DEFAULTS: SettingsData = {
   trackingOptOut: false,
 };
 
-const LANGS = [
-  { code: 'de', label: 'Deutsch' },
-  { code: 'en', label: 'English' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'fr', label: 'Français' },
-  { code: 'zh', label: 'Mandarin (中文)' },
-  { code: 'ja', label: '日本語' },
-];
-
 export default function SettingsPage() {
   const [data, setData] = useState<SettingsData>(DEFAULTS);
   const [msg, setMsg] = useState<string | null>(null);
@@ -45,15 +33,12 @@ export default function SettingsPage() {
     try {
       const raw = localStorage.getItem(LS_SETTINGS);
       if (raw) setData(JSON.parse(raw));
-      const l = localStorage.getItem(LS_LANG);
-      if (l) setData(prev => ({ ...prev, lang: l }));
     } catch {}
   }, []);
 
   function save() {
     try {
       localStorage.setItem(LS_SETTINGS, JSON.stringify(data));
-      localStorage.setItem(LS_LANG, data.lang);
       setMsg('Einstellungen gespeichert (Demo).');
       setTimeout(() => setMsg(null), 1500);
     } catch {
@@ -65,20 +50,8 @@ export default function SettingsPage() {
     <main className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="mb-6 text-3xl font-extrabold">Einstellungen</h1>
 
-      {/* Sprache */}
-      <section className="rounded-2xl border border-white/10 bg-black/50 p-4">
-        <h2 className="mb-3 text-xl font-bold">Sprache</h2>
-        <select
-          className="w-full rounded-xl border border-white/15 bg-black/40 px-3 py-2 outline-none focus:border-orange-400"
-          value={data.lang}
-          onChange={(e) => setData({ ...data, lang: e.target.value })}
-        >
-          {LANGS.map(l => <option key={l.code} value={l.code}>{l.label}</option>)}
-        </select>
-      </section>
-
       {/* Darstellung */}
-      <section className="mt-6 rounded-2xl border border-white/10 bg-black/50 p-4">
+      <section className="rounded-2xl border border-white/10 bg-black/50 p-4">
         <h2 className="mb-3 text-xl font-bold">Darstellung</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           {(['system','dark','light'] as const).map(opt => (
@@ -160,33 +133,13 @@ export default function SettingsPage() {
 
         <div className="mt-3 text-sm opacity-80">
           <span>Weitere Infos: </span>
-          <Link
-            href="/privacy-policy"
-            className="text-orange-400 hover:underline"
-          >
-            Datenschutzerklärung
-          </Link>
+          <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link>
           <span> · </span>
-          <Link
-            href="/cookie-settings"
-            className="text-orange-400 hover:underline"
-          >
-            Cookie-Einstellungen
-          </Link>
+          <Link href="/cookie-settings" className="text-orange-400 hover:underline">Cookie-Einstellungen</Link>
           <span> · </span>
-          <Link
-            href="/terms"
-            className="text-orange-400 hover:underline"
-          >
-            AGB
-          </Link>
+          <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link>
           <span> · </span>
-          <Link
-            href="/imprint"
-            className="text-orange-400 hover:underline"
-          >
-            Impressum
-          </Link>
+          <Link href="/imprint" className="text-orange-400 hover:underline">Impressum</Link>
         </div>
       </section>
 
