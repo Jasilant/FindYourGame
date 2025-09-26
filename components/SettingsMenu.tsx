@@ -12,7 +12,7 @@ const LANGS: Lang[] = [
   { code: 'it', label: 'Italiano' },
   { code: 'fr', label: 'Français' },
   { code: 'zh', label: 'Mandarin (中文)' },
-  { code: 'ja', label: '日本語' },
+  { code: 'ja', label: '日本語' }
 ];
 
 const LS_LANG = 'findyourgame:lang';
@@ -26,7 +26,6 @@ export default function SettingsMenu() {
   const [langOpen, setLangOpen] = useState(false);
   const [lang, setLang] = useState<string>('de');
 
-  // Position des Portals (unter dem Button, nach rechts ausgerichtet)
   const [pos, setPos] = useState<{ top: number; left: number; width: number }>({ top: 0, left: 0, width: 0 });
 
   useEffect(() => {
@@ -36,15 +35,13 @@ export default function SettingsMenu() {
     } catch {}
   }, []);
 
-  // Repositioniere das Menü bei Open/Resize/Scroll
   useLayoutEffect(() => {
     function place() {
       const el = btnRef.current;
       if (!el) return;
       const r = el.getBoundingClientRect();
-      // rechtsbündig: Menü hat 224px Breite (w-56). Wir setzen left = r.right - 224
-      const MENU_W = 224;
-      const top = Math.round(r.bottom + window.scrollY + 8); // 8px Abstand
+      const MENU_W = 224; // w-56
+      const top = Math.round(r.bottom + window.scrollY + 8);
       const left = Math.round(r.right + window.scrollX - MENU_W);
       setPos({ top, left, width: MENU_W });
     }
@@ -59,7 +56,6 @@ export default function SettingsMenu() {
     }
   }, [open]);
 
-  // Outside-Klick (pointerdown ist robuster als click)
   useEffect(() => {
     function onOutside(e: PointerEvent) {
       const btn = btnRef.current;
@@ -90,7 +86,7 @@ export default function SettingsMenu() {
   }, [open]);
 
   function onToggle(e: React.MouseEvent) {
-    e.stopPropagation(); // nicht an Window weiterreichen
+    e.stopPropagation();
     setOpen(v => !v);
     if (open) setLangOpen(false);
   }
@@ -107,19 +103,13 @@ export default function SettingsMenu() {
     router.push('/login');
   }
 
-  // Dropdown als Portal rendern
   const dropdown = open
     ? createPortal(
         <div
           id="settings-menu-portal"
           style={{ position: 'absolute', top: pos.top, left: pos.left, width: pos.width, zIndex: 9999 }}
-          // Eigene Box, unabhängig von Navbar-Hover/Overflow
         >
-          <div
-            className="rounded-2xl border border-white/10 bg-black/90 p-2 shadow-xl backdrop-blur"
-            role="menu"
-          >
-            {/* 1) Profil */}
+          <div className="rounded-2xl border border-white/10 bg-black/90 p-2 shadow-xl backdrop-blur" role="menu">
             <Link
               href="/profile"
               className="flex items-center justify-between rounded-xl px-3 py-2 hover:bg-white/5"
@@ -130,7 +120,6 @@ export default function SettingsMenu() {
               <span className="text-xs opacity-60">Konto</span>
             </Link>
 
-            {/* 2) Einstellungen */}
             <Link
               href="/settings"
               className="mt-1 flex items-center justify-between rounded-xl px-3 py-2 hover:bg-white/5"
@@ -141,7 +130,6 @@ export default function SettingsMenu() {
               <span className="text-xs opacity-60">Allgemein</span>
             </Link>
 
-            {/* 3) Sprache */}
             <div className="mt-1">
               <button
                 type="button"
@@ -172,7 +160,6 @@ export default function SettingsMenu() {
               )}
             </div>
 
-            {/* 4) Ausloggen */}
             <div className="mt-2 border-t border-white/10 pt-2">
               <button
                 type="button"
@@ -190,7 +177,6 @@ export default function SettingsMenu() {
 
   return (
     <div className="relative">
-      {/* Gear Button */}
       <button
         ref={btnRef}
         type="button"
@@ -200,14 +186,12 @@ export default function SettingsMenu() {
         className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/40 hover:border-orange-400"
         title="Einstellungen"
       >
-        {/* Gear-Icon (SVG) */}
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
           <path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" />
           <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.05.06a2 2 0 0 1-2.83 2.83l-.06-.05A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .55l-.06.06a2 2 0 0 1-2.83 0l-.06-.06a1.7 1.7 0 0 0-1-.55 1.7 1.7 0 0 0-1.87.34l-.06.05a2 2 0 0 1-2.83-2.83l.05-.06A1.7 1.7 0 0 0 4.6 15c0-.39-.14-.77-.39-1.06l-.05-.06a2 2 0 0 1 2.83-2.83l.06.05c.29.25.67.39 1.06.39s.77-.14 1.06-.39l.06-.05a2 2 0 0 1 2.83 0l.06.05c.29.25.67.39 1.06.39s.77-.14 1.06-.39l.06-.05a2 2 0 0 1 2.83 2.83l-.05.06c-.25.29-.39.67-.39 1.06Z" />
         </svg>
       </button>
 
-      {/* Portal-Dropdown */}
       {dropdown}
     </div>
   );
