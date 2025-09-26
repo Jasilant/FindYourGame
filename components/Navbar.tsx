@@ -28,7 +28,7 @@ export default function Navbar() {
           <Link href="/browse" className="text-zinc-300 hover:text-white">Browse</Link>
         </nav>
 
-        {/* Right: Icons */}
+        {/* Right: Favorites + Settings */}
         <div className="flex items-center gap-2">
           <Link
             href="/favorites"

@@ -10,7 +10,7 @@ export default function CookieSettings() {
   return (
     <main className="mx-auto max-w-3xl px-3 md:px-6 py-6">
       <h1 className="text-2xl font-bold text-white mb-2">Cookie-Einstellungen (Platzhalter)</h1>
-      <p className="text-sm text-zinc-400 mb-4">Passe deine Einwilligungen an. (Rechtskonforme Banner-Logik folgt.)</p>
+      <p className="text-sm text-zinc-400 mb-4">Passe deine Einwilligungen an.</p>
 
       <label className="flex items-center justify-between gap-3 py-2">
         <span className="text-sm text-zinc-300">Notwendig</span>

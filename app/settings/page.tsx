@@ -17,7 +17,6 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold text-white mb-2">Einstellungen</h1>
       <p className="text-sm text-zinc-400 mb-6">Allgemeine App-Optionen & Datenschutz.</p>
 
-      {/* Allgemein */}
       <Section title="Allgemein">
         <Row label="Sprache">
           <select
@@ -53,13 +52,11 @@ export default function SettingsPage() {
         </Row>
       </Section>
 
-      {/* Benachrichtigungen */}
       <Section title="Benachrichtigungen">
         <Toggle label="E-Mails: Neue Releases (Wunschlisten & Genres)" checked={emailsNewReleases} onChange={setEmailsNewReleases} />
         <Toggle label="E-Mails: Deals & Rabatte" checked={emailsDeals} onChange={setEmailsDeals} />
       </Section>
 
-      {/* Datenschutz & Daten */}
       <Section title="Datenschutz & Daten">
         <Toggle label="Marketing-Einwilligung (Newsletter, Aktionen)" checked={marketingConsent} onChange={setMarketingConsent} />
         <div className="text-xs text-zinc-400 mt-2">
@@ -70,12 +67,10 @@ export default function SettingsPage() {
         </div>
       </Section>
 
-      {/* Sicherheit */}
       <Section title="Sicherheit">
         <div className="text-sm text-zinc-300">2FA, aktive Sitzungen & verbundene Logins werden mit echtem Account eingeführt.</div>
       </Section>
 
-      {/* Rechtliches */}
       <Section title="Rechtliches">
         <ul className="list-disc list-inside text-sm text-zinc-300 space-y-1">
           <li><Link className="underline" href="/privacy-policy">Datenschutzerklärung</Link></li>

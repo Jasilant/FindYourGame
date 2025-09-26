@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function ProfilePage() {
-  // Demo-States (ohne Backend)
   const [email, setEmail] = useState('user@example.com');
   const [username, setUsername] = useState('PlayerOne');
   const [currentPw, setCurrentPw] = useState('');
@@ -22,10 +21,7 @@ export default function ProfilePage() {
     alert('Passwort geändert (Demo).');
   };
   const onDownload = () => {
-    const data = {
-      email, username, twoFA,
-      exportAt: new Date().toISOString(),
-    };
+    const data = { email, username, twoFA, exportAt: new Date().toISOString() };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -46,7 +42,6 @@ export default function ProfilePage() {
         Aktualisiere deine Anmeldedaten und verwalte Sicherheits- & Datenschutz-Optionen.
       </p>
 
-      {/* Basisdaten */}
       <section className="mb-8 rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-4">
         <h2 className="text-white font-semibold mb-3">Basisdaten</h2>
         <form onSubmit={onSaveBasic} className="grid gap-3">
@@ -77,7 +72,6 @@ export default function ProfilePage() {
         </form>
       </section>
 
-      {/* Passwort ändern */}
       <section className="mb-8 rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-4">
         <h2 className="text-white font-semibold mb-3">Passwort ändern</h2>
         <form onSubmit={onChangePw} className="grid gap-3">
@@ -99,7 +93,6 @@ export default function ProfilePage() {
         </form>
       </section>
 
-      {/* Sicherheit */}
       <section className="mb-8 rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-4">
         <h2 className="text-white font-semibold mb-3">Sicherheit</h2>
         <label className="flex items-center justify-between gap-3">
@@ -109,12 +102,9 @@ export default function ProfilePage() {
           </div>
           <input type="checkbox" checked={twoFA} onChange={(e)=>setTwoFA(e.target.checked)} />
         </label>
-        <div className="mt-3 text-xs text-zinc-400">
-          Sitzungen & Geräte-Verwaltung kommt mit echtem Login.
-        </div>
+        <div className="mt-3 text-xs text-zinc-400">Sitzungen & Geräte-Verwaltung kommt mit echtem Login.</div>
       </section>
 
-      {/* Rechtlich relevante Aktionen */}
       <section className="mb-8 rounded-2xl bg-white/[0.03] ring-1 ring-white/10 p-4">
         <h2 className="text-white font-semibold mb-3">Datenschutz & Rechte</h2>
         <div className="grid gap-2">
@@ -127,7 +117,7 @@ export default function ProfilePage() {
           <button onClick={onDelete} className="rounded-xl px-3 py-2 bg-red-600 text-white hover:bg-red-500 text-sm">Konto löschen</button>
         </div>
         <p className="text-xs text-zinc-400 mt-3">
-          Hinweis: In der EU (GDPR) & der Schweiz (revDSG) hast du u.a. Rechte auf Auskunft, Berichtigung, Löschung und Datenportabilität. Diese UI zeigt die Stellen dafür – die tatsächliche Bearbeitung folgt mit dem echten Backend.
+          Hinweis: EU (GDPR) & Schweiz (revDSG) – Rechte auf Auskunft, Berichtigung, Löschung, Portabilität. Echte Umsetzung folgt mit Backend.
         </p>
       </section>
     </main>

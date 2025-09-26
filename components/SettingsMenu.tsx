@@ -64,10 +64,12 @@ export default function SettingsMenu() {
         ].join(' ')}
         role="menu"
       >
+        {/* 1. Profil */}
         <MenuLink href="/profile" icon={<User2 className="h-4 w-4" />} label="Profil" />
+        {/* 2. Einstellungen */}
         <MenuLink href="/settings" icon={<SlidersHorizontal className="h-4 w-4" />} label="Einstellungen" />
 
-        {/* Sprache */}
+        {/* 3. Sprache */}
         <button
           onClick={() => setOpenLang((v) => !v)}
           className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left text-zinc-200 hover:text-white hover:bg-white/5"
@@ -101,6 +103,7 @@ export default function SettingsMenu() {
 
         <div className="h-px bg-white/10" />
 
+        {/* 4. Ausloggen */}
         <button
           onClick={() => logout()}
           role="menuitem"
