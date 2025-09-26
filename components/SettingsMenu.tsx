@@ -54,7 +54,6 @@ export default function SettingsMenu() {
         <Cog className="h-5 w-5" />
       </button>
 
-      {/* Dropdown */}
       <div
         className={[
           'absolute right-0 mt-2 w-56 rounded-2xl overflow-hidden',
@@ -64,12 +63,9 @@ export default function SettingsMenu() {
         ].join(' ')}
         role="menu"
       >
-        {/* 1. Profil */}
         <MenuLink href="/profile" icon={<User2 className="h-4 w-4" />} label="Profil" />
-        {/* 2. Einstellungen */}
         <MenuLink href="/settings" icon={<SlidersHorizontal className="h-4 w-4" />} label="Einstellungen" />
 
-        {/* 3. Sprache */}
         <button
           onClick={() => setOpenLang((v) => !v)}
           className="w-full flex items-center justify-between gap-2 px-3 py-2 text-left text-zinc-200 hover:text-white hover:bg-white/5"
@@ -82,14 +78,11 @@ export default function SettingsMenu() {
           <ChevronDown className={['h-4 w-4 transition', openLang ? 'rotate-180' : ''].join(' ')} />
         </button>
 
-        {/* Language Panel */}
         <div className={['px-2 pb-2', openLang ? 'block' : 'hidden'].join(' ')}>
           {LANGS.map((l) => (
             <button
               key={l.code}
-              onClick={() => {
-                setLanguage(l.code as any);
-              }}
+              onClick={() => setLanguage(l.code as any)}
               className={[
                 'w-full flex items-center justify-between rounded-lg px-2 py-1.5 text-sm',
                 'text-zinc-300 hover:text-white hover:bg-white/5'
@@ -103,7 +96,6 @@ export default function SettingsMenu() {
 
         <div className="h-px bg-white/10" />
 
-        {/* 4. Ausloggen */}
         <button
           onClick={() => logout()}
           role="menuitem"

@@ -8,7 +8,6 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-black/70 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-3 md:px-6">
-        {/* Left: Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo-fox-pixel-coarse.svg"
@@ -20,7 +19,6 @@ export default function Navbar() {
           <span className="hidden sm:inline text-white font-semibold">FindYourGame.ch</span>
         </Link>
 
-        {/* Center: Tabs */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
           <Link href="/" className="text-zinc-300 hover:text-white">Home</Link>
           <Link href="/filter" className="text-zinc-300 hover:text-white">Spiele-Filter</Link>
@@ -28,7 +26,6 @@ export default function Navbar() {
           <Link href="/browse" className="text-zinc-300 hover:text-white">Browse</Link>
         </nav>
 
-        {/* Right: Favorites + Settings */}
         <div className="flex items-center gap-2">
           <Link
             href="/favorites"

@@ -1,3 +1,4 @@
+
 export default function Terms() {
   return (
     <main className="mx-auto max-w-3xl px-3 md:px-6 py-6">
