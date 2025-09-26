@@ -131,10 +131,4 @@ export default function SettingsPage() {
         </label>
 
         <div className="mt-3 text-sm opacity-80">
-          Weitere Infos: <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link> · <Link href="/cookie-settings" className="text-orange-400 hover:underline">Cookie-Einstellungen</Link> · <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link> · <Link href="/imprint" className="text-orange-400 hover:underline">Impressum</Link>
-        </div>
-      </section>
-
-      <div className="mt-6 flex gap-3">
-        <button onClick={save} className="rounded-xl bg-orange-500 px-4 py-2 font-semibold text-black hover:bg-orange-400">Speichern</button>
-        {msg && <span className="self-center rounded-xl border border-white/15 bg-white/5 px-3
+          Weitere Infos: <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link> · <Link href="/cookie-settings" className="text-orange-400 hover:underline">Cookie-Einstellungen</Link> · <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link> · <Link href="/imprint" cla
