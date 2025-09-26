@@ -24,7 +24,7 @@ export function demoLogin(email: string) {
         displayName: email.split('@')[0] || 'Gamer',
         email,
         createdAt: now,
-        updatedAt: now,
+        updatedAt: now
       };
       localStorage.setItem(USER_KEY, JSON.stringify(user));
     }
