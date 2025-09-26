@@ -16,7 +16,6 @@ const LANGS: Lang[] = [
 ];
 
 const LS_LANG = 'findyourgame:lang';
-const LS_AUTH = 'findyourgame:auth';
 
 export default function SettingsMenu() {
   const router = useRouter();
@@ -98,9 +97,9 @@ export default function SettingsMenu() {
   }
 
   function onLogout() {
-    try { localStorage.removeItem(LS_AUTH); } catch {}
     setOpen(false);
-    router.push('/login');
+    // zentraler Logout über Route (sauber, erweiterbar)
+    router.push('/logout');
   }
 
   const dropdown = open
