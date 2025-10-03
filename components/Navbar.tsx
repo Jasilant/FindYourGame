@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { signOut } from "next-auth/react";
 import GenresMenu from "./GenresMenu";
 
 /* --------- kleine Inline-Icons ---------- */
@@ -139,6 +140,7 @@ export default function Navbar() {
             ]}
           />
 
+          {/* Dein bestehendes Genres-Dropdown */}
           <GenresMenu />
         </div>
 
@@ -157,10 +159,15 @@ export default function Navbar() {
               ⚙
             </span>
             <div className="invisible absolute right-0 z-50 mt-2 w-52 rounded-2xl border border-white/10 bg-black p-2 text-white opacity-0 shadow-xl ring-1 ring-white/15 transition group-hover:visible group-hover:opacity-100">
-              <Link href="/settings" className="block rounded-lg px-3 py-2 hover:bg-white/10">Einstellungen</Link>
               <Link href="/profile"  className="block rounded-lg px-3 py-2 hover:bg-white/10">Profil</Link>
+              <Link href="/settings" className="block rounded-lg px-3 py-2 hover:bg-white/10">Einstellungen</Link>
               <Link href="/language" className="block rounded-lg px-3 py-2 hover:bg-white/10">Sprache</Link>
-              <button className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10">Ausloggen</button>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="block w-full rounded-lg px-3 py-2 text-left hover:bg-white/10"
+              >
+                Ausloggen
+              </button>
             </div>
           </div>
         </div>
