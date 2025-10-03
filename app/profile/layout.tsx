@@ -1,8 +1,5 @@
-'use client';
 
-// Verhindert SSG/Prerendern für das ganze /profile-Segment
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
+'use client';
 
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';

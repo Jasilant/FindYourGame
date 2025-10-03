@@ -1,9 +1,5 @@
 'use client';
 
-// Verhindert SSG/Prerendern für das ganze /favorites-Segment
-export const dynamic = 'force-dynamic';
-export const revalidate = 0;
-
 import { useSession } from 'next-auth/react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -24,7 +20,7 @@ export default function FavoritesGuardLayout({ children }: { children: React.Rea
     return <div className="p-6 opacity-80">Lade…</div>;
   }
   if (status === 'unauthenticated') {
-    return null; // wird sofort redirected
+    return null; // Redirect erfolgt
   }
   return <>{children}</>;
 }
