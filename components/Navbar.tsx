@@ -64,7 +64,7 @@ function HoverOnlyMenu({
       data-open={open ? "true" : "false"}
       onMouseEnter={enter}
       onMouseLeave={leave}
-      style={{ "--accent": accent } as React.CSSProperties}
+      style={{ ["--accent" as any]: accent } as React.CSSProperties}
     >
       <span className="cursor-pointer opacity-90 hover:opacity-100">{label}</span>
 
@@ -158,7 +158,7 @@ export default function Navbar() {
             <span className="cursor-pointer rounded-xl border border-white/15 px-3 py-1.5 text-sm opacity-90 hover:opacity-100">
               ⚙
             </span>
-            <div className="invisible absolute right-0 z-50 mt-2 w-52 rounded-2xl border border-white/10 bg-black p-2 text-white opacity-0 shadow-xl ring-1 ring-white/15 transition group-hover:visible group-hover:opacity-100">
+            <div className="invisible absolute right-0 z-[70] mt-2 w-52 rounded-2xl border border-white/10 bg-black p-2 text-white opacity-0 shadow-xl ring-1 ring-white/15 transition group-hover:visible group-hover:opacity-100">
               <Link href="/profile"  className="block rounded-lg px-3 py-2 hover:bg-white/10">Profil</Link>
               <Link href="/settings" className="block rounded-lg px-3 py-2 hover:bg-white/10">Einstellungen</Link>
               <Link href="/language" className="block rounded-lg px-3 py-2 hover:bg-white/10">Sprache</Link>
@@ -172,6 +172,59 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Eingebaute (global) Styles für die Hover-Menüs, damit es SOFORT greift */}
+      <style jsx global>{`
+        .menu-wrap { position: relative; }
+        .menu-wrap .menu-caret {
+          position:absolute; top: 34px; left: 12px; width:0; height:0;
+          border-left:8px solid transparent; border-right:8px solid transparent;
+          border-bottom:8px solid color-mix(in oklab, var(--accent) 35%, #111 65%);
+          opacity:0; transform: translateY(-6px); transition: opacity .15s, transform .15s;
+          pointer-events:none;
+        }
+        .menu-wrap .menu-panel {
+          position:absolute; top:44px; left:0;
+          background: color-mix(in oklab, #000 80%, var(--accent) 20%);
+          border:1px solid rgba(255,255,255,.08);
+          border-radius:16px; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+          opacity:0; transform: translateY(-6px); transition: opacity .15s, transform .15s;
+          pointer-events:none; overflow:hidden;
+          backdrop-filter: blur(6px);
+          z-index:60;
+        }
+        .menu-wrap .menu-topline {
+          height:3px; background: var(--accent);
+          background: linear-gradient(90deg, var(--accent), transparent);
+        }
+        .menu-wrap[data-open="true"] .menu-caret,
+        .menu-wrap[data-open="true"] .menu-panel {
+          opacity:1; transform: translateY(0); pointer-events:auto;
+        }
+        .menu-inner { padding:12px; min-width:280px; }
+        .menu-header { display:flex; justify-content:space-between; align-items:center; padding:6px 6px 10px 6px; }
+        .menu-title { font-weight:700; letter-spacing:.2px; }
+        .menu-sub { font-size:.85rem; opacity:.7; }
+        .menu-grid { display:grid; grid-template-columns: 1fr; gap:6px; }
+        @media (min-width: 520px){ .menu-grid { grid-template-columns: 1fr 1fr; } }
+
+        .menu-item {
+          display:flex; gap:10px; align-items:center;
+          padding:10px; border-radius:12px;
+          background: rgba(255,255,255,.03);
+          border:1px solid rgba(255,255,255,.06);
+          text-decoration:none; color:inherit;
+        }
+        .menu-item:hover {
+          background: color-mix(in oklab, var(--accent) 18%, #000 82%);
+          border-color: color-mix(in oklab, var(--accent) 40%, #fff 20%);
+        }
+        .menu-icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; opacity:.9; }
+        .menu-text { display:flex; flex-direction:column; }
+        .menu-label { font-weight:600; line-height:1.1; }
+        .menu-meta { font-size:.8rem; opacity:.7; }
+        .menu-arrow { margin-left:auto; opacity:.6; }
+      `}</style>
     </header>
   );
 }
