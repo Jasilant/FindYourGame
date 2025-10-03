@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
-export default function RegisterPage() {
+function RegisterInner() {
   const router = useRouter();
   const params = useSearchParams();
   const redirect = params.get('redirect') || '/';
@@ -23,7 +23,7 @@ export default function RegisterPage() {
     const confirm = String(fd.get('confirm') || '');
     const accept = fd.get('accept') === 'on';
     const newsletter = fd.get('newsletter') === 'on';
-    const captcha = fd.get('captcha') === 'on'; // Platzhalter bis echtes Captcha eingebaut ist
+    const captcha = fd.get('captcha') === 'on'; // Platzhalter – später echtes Captcha
 
     if (password !== confirm) {
       setLoading(false);
@@ -66,38 +66,18 @@ export default function RegisterPage() {
       <h1 className="mb-6 text-2xl font-extrabold text-orange-500">Registrieren</h1>
 
       <form onSubmit={onSubmit} className="flex flex-col gap-3">
-        <input
-          name="email"
-          type="email"
-          required
-          placeholder="E-Mail"
-          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40"
-        />
-        <input
-          name="password"
-          type="password"
-          required
-          placeholder="Passwort (min. 8 Zeichen)"
-          minLength={8}
-          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40"
-        />
-        <input
-          name="confirm"
-          type="password"
-          required
-          placeholder="Passwort bestätigen"
-          minLength={8}
-          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40"
-        />
+        <input name="email" type="email" required placeholder="E-Mail"
+          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40" />
+        <input name="password" type="password" required minLength={8} placeholder="Passwort (min. 8 Zeichen)"
+          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40" />
+        <input name="confirm" type="password" required minLength={8} placeholder="Passwort bestätigen"
+          className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 outline-none placeholder-white/40" />
 
         <label className="flex items-center gap-2 text-sm">
           <input name="accept" type="checkbox" className="accent-orange-500" />
           <span>
-            Ich akzeptiere die{' '}
-            <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link>{' '}
-            und habe die{' '}
-            <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link>{' '}
-            gelesen.
+            Ich akzeptiere die <Link href="/terms" className="text-orange-400 hover:underline">AGB</Link> und habe die{' '}
+            <Link href="/privacy-policy" className="text-orange-400 hover:underline">Datenschutzerklärung</Link> gelesen.
           </span>
         </label>
 
@@ -106,30 +86,19 @@ export default function RegisterPage() {
           <span>Newsletter abonnieren (optional)</span>
         </label>
 
-        {/* Captcha Platzhalter – später gegen echtes Captcha tauschen */}
+        {/* Captcha Platzhalter */}
         <label className="mt-1 flex items-center gap-2 text-xs opacity-80">
           <input name="captcha" type="checkbox" className="accent-orange-500" />
           <span>Ich bin kein Roboter</span>
         </label>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="mt-1 rounded-lg bg-orange-500 px-4 py-2 font-semibold text-black hover:bg-orange-400 disabled:opacity-60"
-        >
+        <button type="submit" disabled={loading}
+          className="mt-1 rounded-lg bg-orange-500 px-4 py-2 font-semibold text-black hover:bg-orange-400 disabled:opacity-60">
           {loading ? 'Registriere…' : 'Registrieren'}
         </button>
 
-        {err && (
-          <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
-            {err}
-          </div>
-        )}
-        {ok && (
-          <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
-            {ok}
-          </div>
-        )}
+        {err && <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">{err}</div>}
+        {ok && <div className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">{ok}</div>}
       </form>
 
       <p className="mt-4 text-sm opacity-80">
@@ -139,5 +108,13 @@ export default function RegisterPage() {
         </Link>
       </p>
     </main>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="p-6 opacity-80">Lade…</div>}>
+      <RegisterInner />
+    </Suspense>
   );
 }
