@@ -1,25 +1,24 @@
-import "./globals.css";
-import "./theme.css";
-import type { Metadata } from "next";
-import Navbar from "../components/Navbar";
-import Providers from "../components/Providers";
-import { Analytics } from "@vercel/analytics/react";
+import './globals.css';
+import type { Metadata } from 'next';
+import Providers from '@/components/Providers';
+import Navbar from '@/components/Navbar';
+import LoginPortalButton from '@/components/LoginPortalButton';
 
 export const metadata: Metadata = {
-  title: "FindYourGame",
-  description: "Entdecke deine Lieblingsspiele!",
-  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" }
+  title: 'FindYourGame',
+  description: 'Finde dein nächstes Lieblingsspiel',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
-      <body>
+      <body className="bg-black text-white">
         <Providers>
           <Navbar />
+          {/* Dezent: globaler Login/Registrieren-Einstieg, nur sichtbar wenn ausgeloggt */}
+          <LoginPortalButton />
           {children}
         </Providers>
-        <Analytics />
       </body>
     </html>
   );
