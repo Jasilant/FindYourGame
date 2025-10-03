@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import SettingsMenu from '@/components/SettingsMenu';
 import { useSession } from 'next-auth/react';
+import NavDropdown from '@/components/NavDropdown';
 
 export default function Navbar() {
   const { status } = useSession();
@@ -12,26 +13,74 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-        {/* Logo links */}
+        {/* Logo */}
         <div className="flex min-w-[160px] items-center">
           <Link href="/" className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor" aria-hidden>
-              <path d="M12 2a10 10 0 1 0 .001 20.001A10 10 0 0 0 12 2Zm-1 5h2v6h-2V7Zm1 10.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5Z" />
-            </svg>
             <span className="text-lg font-bold text-orange-500">FindYourGame</span>
           </Link>
         </div>
 
-        {/* Tabs zentriert (nur funktionierende Seiten) */}
+        {/* Navigation mit Hover-Dropdowns */}
         <nav className="flex flex-1 items-center justify-center gap-1">
           <Link href="/" className="rounded-lg px-3 py-1.5 hover:bg-white/5">Home</Link>
-          <Link href="/releases" className="rounded-lg px-3 py-1.5 hover:bg-white/5">Releases</Link>
-          <Link href="/popular" className="rounded-lg px-3 py-1.5 hover:bg-white/5">Popular</Link>
-          <Link href="/platforms" className="rounded-lg px-3 py-1.5 hover:bg-white/5">Platforms</Link>
-          <Link href="/genres" className="rounded-lg px-3 py-1.5 hover:bg-white/5">Genres</Link>
+
+          {/* RELEASES */}
+          <NavDropdown
+            label="Releases"
+            items={[
+              { name: 'Upcoming',     href: '/releases?tab=upcoming' },
+              { name: 'This Week',    href: '/releases?range=week' },
+              { name: 'This Month',   href: '/releases?range=month' },
+              { name: 'Calendar',     href: '/releases?view=calendar' },
+              { name: 'New on PC',    href: '/releases?platform=pc' },
+            ]}
+          />
+
+          {/* POPULAR */}
+          <NavDropdown
+            label="Popular"
+            items={[
+              { name: 'Best of Year', href: '/popular?sort=best-of-year' },
+              { name: 'Top Rated',    href: '/popular?sort=top-rated' },
+              { name: 'Trending',     href: '/popular?sort=trending' },
+              { name: 'All Time',     href: '/popular?sort=all-time' },
+              { name: 'Indie Hits',   href: '/popular?tag=indie' },
+            ]}
+          />
+
+          {/* PLATFORMS */}
+          <NavDropdown
+            label="Platforms"
+            items={[
+              { name: 'PC',          href: '/platforms?platform=pc' },
+              { name: 'PlayStation', href: '/platforms?platform=playstation' },
+              { name: 'Xbox',        href: '/platforms?platform=xbox' },
+              { name: 'Switch',      href: '/platforms?platform=switch' },
+              { name: 'Mobile',      href: '/platforms?platform=mobile' },
+            ]}
+          />
+
+          {/* GENRES */}
+          <NavDropdown
+            label="Genres"
+            items={[
+              { name: 'Action',    href: '/genres?genre=action' },
+              { name: 'Adventure', href: '/genres?genre=adventure' },
+              { name: 'RPG',       href: '/genres?genre=rpg' },
+              { name: 'Shooter',   href: '/genres?genre=shooter' },
+              { name: 'Strategy',  href: '/genres?genre=strategy' },
+              { name: 'Simulation',href: '/genres?genre=simulation' },
+              { name: 'Sports',    href: '/genres?genre=sports' },
+              { name: 'Racing',    href: '/genres?genre=racing' },
+              { name: 'Horror',    href: '/genres?genre=horror' },
+              { name: 'Survival',  href: '/genres?genre=survival' },
+              { name: 'Indie',     href: '/genres?genre=indie' },
+              { name: 'Puzzle',    href: '/genres?genre=puzzle' },
+            ]}
+          />
         </nav>
 
-        {/* Rechts: Favoriten + Settings/Anmelden (wie gehabt) */}
+        {/* Rechts */}
         <div className="flex min-w-[160px] items-center justify-end gap-3">
           <Link
             href="/favorites"
