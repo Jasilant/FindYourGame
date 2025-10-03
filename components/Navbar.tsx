@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut, signIn, useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import GenresMenu from "./GenresMenu";
 
-type IconName = "calendar"|"sparkles"|"trophy"|"fire"|"pc"|"playstation"|"xbox"|"switch"|"dot";
+/* --------- kleine Inline-Icons ---------- */
+type IconName =
+  | "calendar" | "sparkles" | "trophy" | "fire"
+  | "pc" | "playstation" | "xbox" | "switch"
+  | "dot";
+
 function Icon({ name }: { name: IconName }) {
   const base = { width: 16, height: 16, viewBox: "0 0 24 24", fill: "currentColor" } as const;
   switch (name) {
@@ -21,6 +27,7 @@ function Icon({ name }: { name: IconName }) {
   }
 }
 
+/* ---------- Reusable Hover menu ---------- */
 type MenuItem = { href: string; label: string; desc?: string; icon?: IconName; accent?: string; };
 
 function HoverOnlyMenu({
@@ -57,9 +64,28 @@ function HoverOnlyMenu({
 }
 
 export default function Navbar() {
-  // ⚠️ Kein Destructuring → robuster bei exotischen Renderpfaden
   const session = useSession();
   const loggedIn = session?.status === "authenticated";
+  const [showLogin, setShowLogin] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const redirectTo = typeof window !== 'undefined' ? (new URLSearchParams(window.location.search).get('redirect') || pathname) : pathname;
+
+  async function doLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const email = String(fd.get('email') || '');
+    const password = String(fd.get('password') || '');
+    const res = await signIn('credentials', { email, password, redirect: true, callbackUrl: redirectTo || '/' });
+    // NextAuth übernimmt Redirect, kein extra Code nötig
+  }
+
+  function handleFavoritesClick(e: React.MouseEvent) {
+    if (!loggedIn) {
+      e.preventDefault();
+      router.push(`/login?redirect=/favorites`);
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-white/10 bg-black/70 backdrop-blur">
@@ -92,21 +118,60 @@ export default function Navbar() {
             ]}
           />
 
-          {/* Dein bestehendes Genres-Dropdown */}
           <GenresMenu />
         </div>
 
-        <div className="flex items-center gap-3">
-          <Link href="/favorites" className="rounded-xl border border-white/15 px-3 py-1.5 text-sm opacity-90 hover:opacity-100"
-            aria-label="Favoriten" title="Favoriten">♥</Link>
+        <div className="relative flex items-center gap-3">
+          <Link
+            href="/favorites"
+            onClick={handleFavoritesClick}
+            className="rounded-xl border border-white/15 px-3 py-1.5 text-sm opacity-90 hover:opacity-100"
+            aria-label="Favoriten"
+            title="Favoriten"
+          >
+            ♥
+          </Link>
 
           {!loggedIn && (
             <>
-              <Link href="/login" className="rounded-xl border border-white/15 px-3 py-1.5 text-sm hover:border-orange-400">Login</Link>
-              <Link href="/register" className="rounded-xl bg-orange-500 px-3 py-1.5 text-sm font-semibold text-black hover:bg-orange-400">Registrieren</Link>
+              {/* Login-Trigger */}
+              <button
+                onClick={() => setShowLogin((v) => !v)}
+                className="rounded-xl border border-white/15 px-3 py-1.5 text-sm hover:border-orange-400"
+              >
+                Login
+              </button>
+
+              {/* Mini-Login-Panel */}
+              {showLogin && (
+                <div className="absolute right-0 top-[42px] z-[80] w-[300px] rounded-2xl border border-white/12 bg-black/90 p-3 shadow-xl backdrop-blur">
+                  <div className="mb-2 text-sm font-semibold">Anmelde­daten eingeben</div>
+                  <form onSubmit={doLogin} className="flex flex-col gap-2">
+                    <input name="email" type="email" required placeholder="E-Mail"
+                      className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none placeholder-white/40" />
+                    <input name="password" type="password" required placeholder="Passwort"
+                      className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-sm outline-none placeholder-white/40" />
+                    <button type="submit"
+                      className="rounded-lg bg-orange-500 px-3 py-2 text-sm font-semibold text-black hover:bg-orange-400">
+                      Einloggen
+                    </button>
+                  </form>
+                  <div className="mt-2 text-xs opacity-70">
+                    Noch kein Konto?{" "}
+                    <Link href="/register" className="text-orange-400 hover:underline">
+                      Jetzt registrieren
+                    </Link>
+                  </div>
+                </div>
+              )}
+
+              <Link href="/register" className="rounded-xl bg-orange-500 px-3 py-1.5 text-sm font-semibold text-black hover:bg-orange-400">
+                Registrieren
+              </Link>
             </>
           )}
 
+          {/* Zahnrad-Menü (Logout nur wenn eingeloggt) */}
           <div className="relative group">
             <span className="cursor-pointer rounded-xl border border-white/15 px-3 py-1.5 text-sm opacity-90 hover:opacity-100">⚙</span>
             <div className="invisible absolute right-0 z-[70] mt-2 w-56 rounded-2xl border border-white/10 bg-black p-2 text-white opacity-0 shadow-xl ring-1 ring-white/15 transition group-hover:visible group-hover:opacity-100">
@@ -145,14 +210,12 @@ export default function Navbar() {
         .menu-wrap .menu-topline { height:3px; background: linear-gradient(90deg, var(--accent), transparent); }
         .menu-wrap[data-open="true"] .menu-caret,
         .menu-wrap[data-open="true"] .menu-panel { opacity:1; transform: translateX(-50%) translateY(0); pointer-events:auto; }
-
         .menu-inner { padding:12px; min-width:280px; }
         .menu-header { display:flex; justify-content:space-between; align-items:center; padding:6px 6px 10px 6px; }
         .menu-title { font-weight:700; letter-spacing:.2px; }
         .menu-sub { font-size:.85rem; opacity:.7; }
         .menu-grid { display:grid; grid-template-columns: 1fr; gap:6px; }
         @media (min-width: 520px){ .menu-grid { grid-template-columns: 1fr 1fr; } }
-
         .menu-item { display:flex; gap:10px; align-items:center; padding:10px; border-radius:12px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06); text-decoration:none; color:inherit; transition: background .15s, border-color .15s, box-shadow .15s; }
         .menu-item:hover { background: color-mix(in oklab, var(--item, var(--accent)) 20%, #000 80%); border-color: color-mix(in oklab, var(--item, var(--accent)) 40%, #fff 20%); box-shadow: 0 0 0 1px color-mix(in oklab, var(--item, var(--accent)) 35%, transparent); }
         .menu-icon { width:22px; height:22px; display:flex; align-items:center; justify-content:center; opacity:.9; }

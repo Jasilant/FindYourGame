@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 export const dynamic = 'force-dynamic';
 
-export default function FavoritesGuardLayout({ children }: { children: React.ReactNode }) {
+export default function ProfileGuardLayout({ children }: { children: React.ReactNode }) {
   const { status } = useSession();
   const router = useRouter();
   const pathname = usePathname();
@@ -21,7 +21,7 @@ export default function FavoritesGuardLayout({ children }: { children: React.Rea
     return <div className="p-6 opacity-80">Lade…</div>;
   }
   if (status === 'unauthenticated') {
-    return null;
+    return null; // wird sofort ersetzt durch redirect
   }
   return <>{children}</>;
 }
