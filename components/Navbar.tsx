@@ -76,15 +76,7 @@ export default function Navbar() {
     const fd = new FormData(e.currentTarget);
     const email = String(fd.get('email') || '');
     const password = String(fd.get('password') || '');
-    const res = await signIn('credentials', { email, password, redirect: true, callbackUrl: redirectTo || '/' });
-    // NextAuth übernimmt Redirect, kein extra Code nötig
-  }
-
-  function handleFavoritesClick(e: React.MouseEvent) {
-    if (!loggedIn) {
-      e.preventDefault();
-      router.push(`/login?redirect=/favorites`);
-    }
+    await signIn('credentials', { email, password, redirect: true, callbackUrl: redirectTo || '/' });
   }
 
   return (
@@ -122,9 +114,10 @@ export default function Navbar() {
         </div>
 
         <div className="relative flex items-center gap-3">
+          {/* ♥ Favoriten: jetzt mit data-requires-auth → globaler Guard übernimmt Redirect */}
           <Link
             href="/favorites"
-            onClick={handleFavoritesClick}
+            data-requires-auth="true"
             className="rounded-xl border border-white/15 px-3 py-1.5 text-sm opacity-90 hover:opacity-100"
             aria-label="Favoriten"
             title="Favoriten"
