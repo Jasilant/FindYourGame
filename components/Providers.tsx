@@ -1,11 +1,14 @@
 'use client';
 
-import { FavoritesProvider } from "../lib/favorites";
+import { SessionProvider } from 'next-auth/react';
+import AuthClickGuard from './AuthClickGuard';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <FavoritesProvider>
+    <SessionProvider>
+      {/* Globale Click-Absicherung für data-requires-auth-Elemente */}
+      <AuthClickGuard />
       {children}
-    </FavoritesProvider>
+    </SessionProvider>
   );
 }
